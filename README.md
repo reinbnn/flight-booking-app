@@ -1,52 +1,63 @@
-# Skybird Travel - Flight Booking Website
+# SKYJET - Flight Booking Application
 
-A complete flight booking system built with HTML, CSS, JavaScript, and PHP.
+A modern, responsive flight booking web application built with HTML, CSS, and JavaScript.
 
-## Features
+## 📁 Project Structure
 
-### Core Features
-- ✈️ Flight search and booking
-- 🏨 Hotel search and booking (coming soon)
-- 🚗 Car rental search (coming soon)
-- 👤 User authentication and profiles
-- 💳 Secure payment processing (Stripe integration)
-- 📧 Email confirmations
-- 📱 Fully responsive design
+\`\`\`
+flight-booking-app/
+├── index.html              # Homepage
+├── css/
+│   └── style.css          # Global styles
+├── js/
+│   └── main.js            # Main utilities
+├── pages/
+│   ├── flights-results.html
+│   ├── payment.html
+│   ├── booking-confirmation.html
+│   ├── my-bookings.html
+│   ├── profile.html
+│   ├── login.html
+│   ├── register.html
+│   └── ...other pages
+├── webhooks/              # Payment webhooks
+└── README.md
+\`\`\`
 
-### User Features
-- Flight search with filters (price, stops, airlines)
-- Real-time seat availability
-- Passenger information management
-- Booking modifications
-- Cancellation with refunds
-- Email confirmations and receipts
+## 🚀 Features
 
-### Admin Features
-- Flight management
-- Booking management
-- Payment processing
-- User management
-- Report generation
+- ✈️ Flight search and comparison
+- 💳 Secure payment processing
+- 📅 Booking management
+- 👤 User profiles
+- 🔐 Authentication
+- 📱 Responsive design
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Backend**: PHP 7.4+
-- **Database**: MySQL 5.7+
-- **Payment**: Stripe
-- **Server**: Apache with mod_rewrite
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+- **Icons:** Font Awesome 6.4
+- **Responsive:** Mobile-first design
 
-## Installation
+## 📝 Usage
 
-### Prerequisites
-- PHP 7.4 or higher
-- MySQL 5.7 or higher
-- Apache with mod_rewrite enabled
-- Composer (optional)
+1. Clone the repository
+2. Open `index.html` in your browser
+3. Search for flights
+4. Complete booking
+5. View your bookings
 
-### Setup Steps
+## 🔒 Security
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/skybird-travel.git
-cd skybird-travel
+- SSL encryption for payments
+- Secure session storage
+- Input validation
+- CSRF protection
+
+## 📧 Support
+
+For support, contact support@skyjet.com
+
+## 📄 License
+
+© 2025 SKYJET Airlines. All rights reserved.
