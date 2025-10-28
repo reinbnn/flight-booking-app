@@ -6,16 +6,21 @@
 // Database Configuration
 define('DB_HOST', 'localhost');
 define('DB_USER', 'skyjet');
-define('DB_PASS', 'skyjet123');
+define('DB_PASS', 'skyjet123');  // <-- ADD PASSWORD HERE
 define('DB_NAME', 'skyjet');
 
 // API Configuration
-define('API_BASE_URL', 'http://skyjet.local/api');
-define('APP_URL', 'http://skyjet.local');
+define('API_BASE_URL', 'http://localhost:8000/api');
+define('APP_URL', 'http://localhost:8000');
 define('APP_NAME', 'SKYJET - Premium Flight Booking');
 
 // JWT Secret
-define('JWT_SECRET', 'skyjet-secret-key-2025');
+define('JWT_SECRET', 'skyjet-secret-key-2025-change-in-production');
+
+// File paths
+define('BASE_PATH', dirname(__FILE__));
+define('CLASSES_PATH', BASE_PATH . '/classes');
+define('API_PATH', BASE_PATH . '/api');
 
 // PDO Connection
 try {
@@ -43,17 +48,17 @@ try {
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-// Handle OPTIONS requests
+// Handle OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-// Helper Functions
-function jsonResponse($success, $data = null, $message = null, $statusCode = 200) {
-    http_response_code($statusCode);
+// Helper functions
+function jsonResponse($success, $data = null, $message = null, $code = 200) {
+    http_response_code($code);
     echo json_encode([
         'success' => $success,
         'data' => $data,
@@ -63,12 +68,12 @@ function jsonResponse($success, $data = null, $message = null, $statusCode = 200
     exit();
 }
 
-function errorResponse($message, $statusCode = 400, $data = null) {
-    jsonResponse(false, $data, $message, $statusCode);
+function errorResponse($message, $code = 400, $data = null) {
+    jsonResponse(false, $data, $message, $code);
 }
 
-function successResponse($data, $message = 'Success', $statusCode = 200) {
-    jsonResponse(true, $data, $message, $statusCode);
+function successResponse($data, $message = 'Success', $code = 200) {
+    jsonResponse(true, $data, $message, $code);
 }
 
 function getAuthToken() {
@@ -81,13 +86,4 @@ function getAuthToken() {
     }
     return null;
 }
-?>
-
-// HTTPS Configuration
-require_once 'https-config.php';
-
-// Use HTTPS for all URLs
-define('SITE_URL', 'https://skyjet.local/');
-define('API_URL', 'https://skyjet.local/api/');
-
 ?>
