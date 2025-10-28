@@ -1,5 +1,7 @@
+-- SKYJET Flight Booking Database
+
 -- Users Table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -15,7 +17,7 @@ CREATE TABLE users (
 );
 
 -- Airlines Table
-CREATE TABLE airlines (
+CREATE TABLE IF NOT EXISTS airlines (
     id INT PRIMARY KEY AUTO_INCREMENT,
     airline_name VARCHAR(100) NOT NULL,
     airline_code VARCHAR(3) UNIQUE,
@@ -26,7 +28,7 @@ CREATE TABLE airlines (
 );
 
 -- Airports Table
-CREATE TABLE airports (
+CREATE TABLE IF NOT EXISTS airports (
     id INT PRIMARY KEY AUTO_INCREMENT,
     airport_code VARCHAR(3) UNIQUE,
     airport_name VARCHAR(100),
@@ -37,58 +39,44 @@ CREATE TABLE airports (
 );
 
 -- Flights Table
-CREATE TABLE flights (
+CREATE TABLE IF NOT EXISTS flights (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    flight_number VARCHAR(10) NOT NULL,
+    flight_number VARCHAR(10) NOT NULL UNIQUE,
     airline_id INT NOT NULL,
-    departure_airport VARCHAR(3),
-    arrival_airport VARCHAR(3),
+    departure_airport VARCHAR(3) NOT NULL,
+    arrival_airport VARCHAR(3) NOT NULL,
     departure_time DATETIME NOT NULL,
     arrival_time DATETIME NOT NULL,
     aircraft_type VARCHAR(50),
     total_seats INT DEFAULT 180,
     available_seats INT DEFAULT 180,
-    status ENUM('active', 'cancelled', 'delayed') DEFAULT 'active',
+    price DECIMAL(10, 2) NOT NULL,
+    duration INT,
+    stops INT DEFAULT 0,
+    status VARCHAR(50) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (airline_id) REFERENCES airlines(id),
-    INDEX idx_route (departure_airport, arrival_airport),
-    INDEX idx_departure (departure_time)
-);
-
--- Flight Prices Table
-CREATE TABLE flight_prices (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    flight_id INT NOT NULL,
-    cabin_class ENUM('economy', 'premium', 'business', 'first') NOT NULL,
-    base_price DECIMAL(10, 2),
-    taxes DECIMAL(10, 2),
-    total_price DECIMAL(10, 2),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (flight_id) REFERENCES flights(id),
-    UNIQUE KEY unique_flight_cabin (flight_id, cabin_class)
+    FOREIGN KEY (airline_id) REFERENCES airlines(id)
 );
 
 -- Bookings Table
-CREATE TABLE bookings (
+CREATE TABLE IF NOT EXISTS bookings (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     flight_id INT NOT NULL,
-    booking_reference VARCHAR(20) UNIQUE NOT NULL,
-    cabin_class ENUM('economy', 'premium', 'business', 'first'),
-    number_of_passengers INT,
-    total_price DECIMAL(12, 2),
-    booking_status ENUM('pending', 'confirmed', 'cancelled', 'completed') DEFAULT 'pending',
-    special_requests TEXT,
+    booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    departure_date DATE NOT NULL,
+    return_date DATE,
+    number_of_passengers INT NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) DEFAULT 'confirmed',
+    booking_reference VARCHAR(20) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (flight_id) REFERENCES flights(id),
-    INDEX idx_user (user_id),
-    INDEX idx_status (booking_status)
+    FOREIGN KEY (flight_id) REFERENCES flights(id)
 );
 
 -- Passengers Table
-CREATE TABLE passengers (
+CREATE TABLE IF NOT EXISTS passengers (
     id INT PRIMARY KEY AUTO_INCREMENT,
     booking_id INT NOT NULL,
     first_name VARCHAR(100) NOT NULL,
@@ -97,119 +85,144 @@ CREATE TABLE passengers (
     phone VARCHAR(20),
     date_of_birth DATE,
     passport_number VARCHAR(50),
-    seat_number VARCHAR(10),
-    meal_preference VARCHAR(50),
-    baggage_allowance INT DEFAULT 23,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
-    INDEX idx_booking (booking_id)
+    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
 );
 
 -- Payments Table
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
     id INT PRIMARY KEY AUTO_INCREMENT,
     booking_id INT NOT NULL,
-    amount DECIMAL(12, 2),
-    payment_method ENUM('credit_card', 'debit_card', 'paypal', 'bank_transfer'),
+    payment_method VARCHAR(50),
+    amount DECIMAL(10, 2) NOT NULL,
+    currency VARCHAR(3) DEFAULT 'USD',
     transaction_id VARCHAR(100),
-    payment_status ENUM('pending', 'completed', 'failed', 'refunded') DEFAULT 'pending',
+    status VARCHAR(50) DEFAULT 'pending',
+    payment_date DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(id)
+);
+
+-- Refunds Table
+CREATE TABLE IF NOT EXISTS refunds (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    payment_id INT,
+    refund_amount DECIMAL(10, 2) NOT NULL,
+    reason VARCHAR(255),
+    status VARCHAR(50) DEFAULT 'pending',
+    processed_date DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (booking_id) REFERENCES bookings(id),
-    INDEX idx_booking (booking_id),
-    INDEX idx_status (payment_status)
+    FOREIGN KEY (payment_id) REFERENCES payments(id)
 );
 
 -- Hotels Table
-CREATE TABLE hotels (
+CREATE TABLE IF NOT EXISTS hotels (
     id INT PRIMARY KEY AUTO_INCREMENT,
     hotel_name VARCHAR(100) NOT NULL,
     city VARCHAR(100),
     country VARCHAR(100),
-    address TEXT,
-    phone VARCHAR(20),
-    email VARCHAR(255),
-    website VARCHAR(255),
+    address VARCHAR(255),
     rating DECIMAL(3, 1),
+    price_per_night DECIMAL(10, 2),
     total_rooms INT,
     available_rooms INT,
+    amenities JSON,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Hotel Rooms Table
-CREATE TABLE hotel_rooms (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    hotel_id INT NOT NULL,
-    room_type VARCHAR(50),
-    price_per_night DECIMAL(10, 2),
-    capacity INT,
-    available_count INT,
-    amenities TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (hotel_id) REFERENCES hotels(id)
-);
-
 -- Hotel Bookings Table
-CREATE TABLE hotel_bookings (
+CREATE TABLE IF NOT EXISTS hotel_bookings (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     hotel_id INT NOT NULL,
-    room_id INT NOT NULL,
-    check_in_date DATE,
-    check_out_date DATE,
-    number_of_nights INT,
-    number_of_guests INT,
-    total_price DECIMAL(12, 2),
-    booking_status ENUM('pending', 'confirmed', 'cancelled') DEFAULT 'pending',
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    number_of_rooms INT,
+    total_price DECIMAL(10, 2),
+    status VARCHAR(50) DEFAULT 'confirmed',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (hotel_id) REFERENCES hotels(id),
-    FOREIGN KEY (room_id) REFERENCES hotel_rooms(id)
+    FOREIGN KEY (hotel_id) REFERENCES hotels(id)
 );
 
 -- Cars Table
-CREATE TABLE cars (
+CREATE TABLE IF NOT EXISTS cars (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    car_rental_company VARCHAR(100),
-    car_type VARCHAR(50),
-    brand VARCHAR(100),
-    model VARCHAR(100),
-    year INT,
-    daily_rate DECIMAL(10, 2),
+    car_type VARCHAR(100),
+    rental_company VARCHAR(100),
+    price_per_day DECIMAL(10, 2),
     available_count INT,
+    city VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Car Bookings Table
-CREATE TABLE car_bookings (
+CREATE TABLE IF NOT EXISTS car_bookings (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     car_id INT NOT NULL,
-    pickup_location VARCHAR(100),
-    dropoff_location VARCHAR(100),
-    pickup_date DATE,
-    dropoff_date DATE,
-    number_of_days INT,
-    total_price DECIMAL(12, 2),
-    booking_status ENUM('pending', 'confirmed', 'cancelled') DEFAULT 'pending',
+    pickup_date DATE NOT NULL,
+    return_date DATE NOT NULL,
+    total_price DECIMAL(10, 2),
+    status VARCHAR(50) DEFAULT 'confirmed',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (car_id) REFERENCES cars(id)
 );
 
--- Insert Sample Airlines
-INSERT INTO airlines (airline_name, airline_code, website, phone) VALUES
-('British Airways', 'BA', 'www.britishairways.com', '+44 344 222 1111'),
-('Air France', 'AF', 'www.airfrance.com', '+33 892 802 802'),
-('Lufthansa', 'LH', 'www.lufthansa.com', '+49 69 86799799'),
-('KLM Royal Dutch Airlines', 'KL', 'www.klm.com', '+31 20 474 7747');
+-- Invoices Table
+CREATE TABLE IF NOT EXISTS invoices (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT,
+    invoice_number VARCHAR(50) UNIQUE,
+    issue_date DATE,
+    due_date DATE,
+    total_amount DECIMAL(10, 2),
+    status VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(id)
+);
 
--- Insert Sample Airports
+-- Error Logs Table
+CREATE TABLE IF NOT EXISTS error_logs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    error_message TEXT,
+    error_code VARCHAR(50),
+    stack_trace LONGTEXT,
+    user_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Audit Logs Table
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    action VARCHAR(100),
+    resource_type VARCHAR(100),
+    resource_id INT,
+    changes JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Add some sample data
+INSERT INTO airlines (airline_name, airline_code, website) VALUES
+('British Airways', 'BA', 'www.britishairways.com'),
+('Emirates', 'EK', 'www.emirates.com'),
+('Lufthansa', 'LH', 'www.lufthansa.com'),
+('Air France', 'AF', 'www.airfrance.com');
+
 INSERT INTO airports (airport_code, airport_name, city, country, timezone) VALUES
-('LHR', 'London Heathrow', 'London', 'United Kingdom', 'GMT'),
-('CDG', 'Charles de Gaulle', 'Paris', 'France', 'CET'),
-('AMS', 'Amsterdam Airport Schiphol', 'Amsterdam', 'Netherlands', 'CET'),
-('FRA', 'Frankfurt am Main', 'Frankfurt', 'Germany', 'CET'),
-('JFK', 'John F. Kennedy International', 'New York', 'United States', 'EST'),
-('LAX', 'Los Angeles International', 'Los Angeles', 'United States', 'PST'),
-('NRT', 'Narita International', 'Tokyo', 'Japan', 'JST');
+('LHR', 'London Heathrow', 'London', 'UK', 'UTC+0'),
+('JFK', 'John F Kennedy', 'New York', 'USA', 'UTC-5'),
+('CDG', 'Charles de Gaulle', 'Paris', 'France', 'UTC+1'),
+('DXB', 'Dubai International', 'Dubai', 'UAE', 'UTC+4');
+
+INSERT INTO flights (flight_number, airline_id, departure_airport, arrival_airport, departure_time, arrival_time, aircraft_type, total_seats, available_seats, price, duration, stops) VALUES
+('BA112', 1, 'LHR', 'JFK', '2025-11-15 10:00:00', '2025-11-15 13:00:00', 'Boeing 787', 300, 50, 450.00, 480, 0),
+('EK210', 2, 'DXB', 'LHR', '2025-11-16 14:00:00', '2025-11-16 18:30:00', 'Boeing 777', 350, 120, 350.00, 270, 0),
+('LH401', 3, 'CDG', 'JFK', '2025-11-17 08:00:00', '2025-11-17 12:00:00', 'Airbus A380', 500, 200, 500.00, 480, 0);
+
