@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Refund - SKYJET</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+
+        .container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
+            overflow: hidden; 
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+        .header p { font-size: 0.95rem; opacity: 0.9; }
+
+        .content { padding: 40px; }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .info-box {
+            background: #f0f8ff;
+            border-left: 4px solid #004E89;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .info-box h3 {
+            color: #004E89;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .info-box p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .policy-info {
+            background: #fff3e0;
+            border: 1px solid #ffe0b2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .policy-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ffe0b2;
+        }
+
+        .policy-item:last-child {
+            border-bottom: none;
+        }
+
+        .policy-label { color: #666; font-weight: 600; }
+        .policy-value { color: #FF6B35; font-weight: 700; }
+
+        .amount-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .amount-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .amount-item {
+            text-align: center;
+        }
+
+        .amount-item .label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .amount-item .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #FF6B35;
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF6B35;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 600px) {
+            .form-actions { grid-template-columns: 1fr; }
+            .amount-info { grid-template-columns: 1fr; }
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-undo"></i> Request Refund</h1>
+            <p>We're sorry to see you go. Let us help!</p>
+        </div>
+
+        <div class="content">
+            <div class="alert" id="alert"></div>
+
+            <div class="info-box">
+                <h3><i class="fas fa-info-circle"></i> Refund Information</h3>
+                <p>To request a refund, please fill out the form below. Our team will review your request and get back to you within 24 hours.</p>
+            </div>
+
+            <form id="refundForm">
+                <!-- Booking Selection -->
+                <div class="form-group">
+                    <label for="booking">Select Booking</label>
+                    <select id="booking" required>
+                        <option value="">-- Choose a booking --</option>
+                    </select>
+                </div>
+
+                <!-- Refund Policy Info -->
+                <div class="policy-info">
+                    <h4 style="margin-bottom: 10px;">Applicable Refund Policy</h4>
+                    <div class="policy-item">
+                        <span class="policy-label">Days Before Departure:</span>
+                        <span class="policy-value" id="policyDays">-</span>
+                    </div>
+                    <div class="policy-item">
+                        <span class="policy-label">Refund Percentage:</span>
+                        <span class="policy-value" id="policyPercentage">-</span>
+                    </div>
+                    <div class="policy-item">
+                        <span class="policy-label">Max Refund Amount:</span>
+                        <span class="policy-value" id="maxRefund">-</span>
+                    </div>
+                </div>
+
+                <!-- Amount Section -->
+                <div class="amount-section">
+                    <label>Refund Amount</label>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <input 
+                            type="number" 
+                            id="amount" 
+                            placeholder="Enter refund amount" 
+                            step="0.01" 
+                            min="0" 
+                            required
+                        >
+                    </div>
+                    <div class="amount-info">
+                        <div class="amount-item">
+                            <div class="label">Processing Fee:</div>
+                            <div class="value" id="processingFee">\$0.00</div>
+                        </div>
+                        <div class="amount-item">
+                            <div class="label">You'll Receive:</div>
+                            <div class="value" id="netRefund">\$0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reason -->
+                <div class="form-group">
+                    <label for="reason">Reason for Refund</label>
+                    <select id="reason" required>
+                        <option value="">-- Select reason --</option>
+                        <option value="change_of_plans">Change of Plans</option>
+                        <option value="medical_emergency">Medical Emergency</option>
+                        <option value="flight_delay">Flight Delay/Cancellation</option>
+                        <option value="personal_reason">Personal Reason</option>
+                        <option value="better_price_found">Found Better Price</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="form-group">
+                    <label for="notes">Additional Comments (Optional)</label>
+                    <textarea 
+                        id="notes" 
+                        placeholder="Tell us more about your reason for requesting a refund..."
+                    ></textarea>
+                </div>
+
+                <!-- Terms Agreement -->
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; font-weight: normal;">
+                        <input type="checkbox" id="terms" required style="width: auto; margin-right: 10px;">
+                        I agree to the refund terms and conditions
+                    </label>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 15px;">Processing your request...</p>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a href="/pages/my-bookings.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Submit Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const PROCESSING_FEE_PERCENTAGE = 0; // From config
+
+        // Load bookings
+        async function loadBookings() {
+            try {
+                const response = await fetch('/api/get-bookings.php');
+                const data = await response.json();
+
+                if (data.success) {
+                    const select = document.getElementById('booking');
+                    data.bookings.forEach(booking => {
+                        const option = document.createElement('option');
+                        option.value = JSON.stringify({
+                            id: booking.id,
+                            departure: booking.departure,
+                            arrival: booking.arrival,
+                            totalPrice: booking.total_price,
+                            departureDate: booking.departure_date
+                        });
+                        option.textContent = `${booking.departure} → ${booking.arrival} (${new Date(booking.departure_date).toLocaleDateString()})`;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+            }
+        }
+
+        // Calculate refund policy
+        function calculateRefundPolicy() {
+            const bookingSelect = document.getElementById('booking');
+            if (!bookingSelect.value) return;
+
+            const booking = JSON.parse(bookingSelect.value);
+            const today = new Date();
+            const departure = new Date(booking.departureDate);
+            const daysDiff = Math.floor((departure - today) / (1000 * 60 * 60 * 24));
+
+            let percentage = 0;
+            if (daysDiff >= 7) percentage = 100;
+            else if (daysDiff >= 3) percentage = 75;
+            else if (daysDiff >= 1) percentage = 50;
+
+            const maxRefund = (booking.totalPrice * percentage) / 100;
+
+            document.getElementById('policyDays').textContent = daysDiff + ' days';
+            document.getElementById('policyPercentage').textContent = percentage + '%';
+            document.getElementById('maxRefund').textContent = '$' + maxRefund.toFixed(2);
+
+            document.getElementById('amount').max = booking.totalPrice;
+            document.getElementById('amount').placeholder = `Max: $${maxRefund.toFixed(2)}`;
+        }
+
+        // Calculate fees
+        function calculateFees() {
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const fee = (amount * PROCESSING_FEE_PERCENTAGE) / 100;
+            const net = amount - fee;
+
+            document.getElementById('processingFee').textContent = '$' + fee.toFixed(2);
+            document.getElementById('netRefund').textContent = '$' + net.toFixed(2);
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Form submission
+        document.getElementById('refundForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const booking = JSON.parse(document.getElementById('booking').value);
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch('/api/request-refund.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        payment_id: booking.paymentId,
+                        amount: amount,
+                        reason: document.getElementById('reason').value,
+                        notes: document.getElementById('notes').value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('✓ Refund request submitted successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/pages/my-bookings.html';
+                    }, 2000);
+                } else {
+                    showAlert('✗ Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('✗ Error submitting request', 'error');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        // Event listeners
+        document.getElementById('booking').addEventListener('change', calculateRefundPolicy);
+        document.getElementById('amount').addEventListener('input', calculateFees);
+
+        // Load bookings on page load
+        loadBookings();
+    </script>
+</body>
+</html>

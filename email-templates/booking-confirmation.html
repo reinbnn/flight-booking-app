@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #004E89, #0077B6); color: white; padding: 30px; text-align: center; }
+        .content { background: white; padding: 30px; }
+        .section { margin: 20px 0; }
+        .section h2 { color: #004E89; border-bottom: 2px solid #FF6B35; padding-bottom: 10px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; }
+        .label { color: #666; }
+        .value { font-weight: 700; color: #004E89; }
+        .button { background: #FF6B35; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 15px 0; }
+        .footer { background: #f0f0f0; padding: 20px; text-align: center; color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Booking Confirmed!</h1>
+            <p>Your reservation has been confirmed</p>
+        </div>
+
+        <div class="content">
+            <p>Dear <?= $data['customer_name'] ?>,</p>
+            <p>Your booking has been confirmed! Here are your details:</p>
+
+            <div class="section">
+                <h2>Booking Information</h2>
+                <div class="detail-row">
+                    <span class="label">Booking ID:</span>
+                    <span class="value"><?= $data['booking_id'] ?></span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Service:</span>
+                    <span class="value"><?= ucfirst($data['service_type']) ?></span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Route:</span>
+                    <span class="value"><?= $data['from_location'] ?> → <?= $data['to_location'] ?></span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Departure:</span>
+                    <span class="value"><?= date('M d, Y', strtotime($data['departure_date'])) ?></span>
+                </div>
+                <?php if ($data['return_date']): ?>
+                <div class="detail-row">
+                    <span class="label">Return:</span>
+                    <span class="value"><?= date('M d, Y', strtotime($data['return_date'])) ?></span>
+                </div>
+                <?php endif; ?>
+                <div class="detail-row">
+                    <span class="label">Total Price:</span>
+                    <span class="value">$<?= number_format($data['total_price'], 2) ?></span>
+                </div>
+            </div>
+
+            <a href="https://skyjet.local/pages/my-bookings.html" class="button">Manage Booking</a>
+
+            <p style="color: #666; margin-top: 20px;">
+                Next step: Complete your payment to finalize this booking. You have 24 hours to complete payment.
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 SKYJET Travel. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

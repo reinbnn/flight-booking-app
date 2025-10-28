@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - SKYJET</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .booking-container {
+            max-width: 1000px;
+            margin: var(--spacing-2xl) auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: var(--spacing-xl);
+        }
+
+        .booking-form {
+            background: white;
+            padding: var(--spacing-2xl);
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .booking-sidebar {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .booking-summary {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+            font-size: 0.9rem;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: var(--spacing-lg);
+        }
+
+        .passenger-form {
+            background: var(--light-color);
+            padding: var(--spacing-lg);
+            border-radius: 6px;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .passenger-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .passenger-header h3 {
+            margin-bottom: 0;
+        }
+
+        .passenger-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: var(--spacing-md);
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .step.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .step::before {
+            content: attr(data-step);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: var(--border-color);
+            border-radius: 50%;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .step.active::before {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-sidebar {
+                position: static;
+            }
+
+            .passenger-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="../index.html" class="logo">
+                    <i class="fas fa-plane-departure"></i>
+                    <span>SKYJET</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: var(--spacing-2xl);">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active" data-step="1">Flight Details</div>
+            <div class="step" data-step="2">Passenger Info</div>
+            <div class="step" data-step="3">Baggage</div>
+            <div class="step" data-step="4">Payment</div>
+        </div>
+    </div>
+
+    <!-- Booking Container -->
+    <div class="container">
+        <div class="booking-container">
+            <!-- Booking Form -->
+            <div class="booking-form">
+                <h2>Booking Details</h2>
+
+                <!-- Passenger Information -->
+                <div id="passengersContainer"></div>
+
+                <button type="button" id="addPassengerBtn" class="btn btn-outline" style="margin-bottom: var(--spacing-xl);">
+                    <i class="fas fa-plus"></i> Add Passenger
+                </button>
+
+                <!-- Baggage -->
+                <div style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-2xl); border-top: 1px solid var(--border-color);">
+                    <h3>Baggage Options</h3>
+                    
+                    <div class="form-group" style="margin-top: var(--spacing-lg);">
+                        <label>
+                            <input type="checkbox" name="baggage" value="extra" id="extraBaggage">
+                            Extra Baggage (20kg) - \$50 per passenger
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="baggage" value="priority" id="priorityBoarding">
+                            Priority Boarding - \$30 per person
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div style="margin-top: var(--spacing-xl);">
+                    <h3>Special Requests</h3>
+                    <textarea id="specialRequests" style="width: 100%; min-height: 100px; padding: var(--spacing-md); border: 1px solid var(--border-color); border-radius: 6px;" placeholder="Meal preferences, wheelchair assistance, etc."></textarea>
+                </div>
+
+                <!-- Terms & Conditions -->
+                <div style="margin-top: var(--spacing-xl);">
+                    <label>
+                        <input type="checkbox" id="agreeTerms" required>
+                        I agree to the <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="button" id="proceedPaymentBtn" class="btn btn-primary" style="width: 100%; margin-top: var(--spacing-xl);">
+                    Proceed to Payment
+                </button>
+            </div>
+
+            <!-- Booking Sidebar -->
+            <div class="booking-sidebar">
+                <h3 style="margin-bottom: var(--spacing-lg);">Booking Summary</h3>
+
+                <div class="booking-summary">
+                    <div class="summary-item">
+                        <span>Flight:</span>
+                        <span id="flightInfo">BA 294</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Date:</span>
+                        <span id="flightDate">Oct 25, 2025</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Passengers:</span>
+                        <span id="passengerCount">1</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Class:</span>
+                        <span id="cabinClass">Economy</span>
+                    </div>
+                </div>
+
+                <div class="booking-summary">
+                    <div class="summary-item">
+                        <span>Base Price:</span>
+                        <span id="basePrice">$450</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Taxes & Fees:</span>
+                        <span id="taxesAmount">$45</span>
+                    </div>
+                    <div class="summary-item" id="baggageLine" style="display: none;">
+                        <span>Baggage:</span>
+                        <span id="baggageAmount">$0</span>
+                    </div>
+                </div>
+
+                <div class="summary-total">
+                    <span>Total Price:</span>
+                    <span id="totalPrice">$495</span>
+                </div>
+
+                <p style="font-size: 0.85rem; color: #666; margin-top: var(--spacing-md);">
+                    <i class="fas fa-lock"></i> Secure payment powered by Stripe
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: var(--spacing-2xl);">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--spacing-lg);">
+                <p>&copy; 2025 SKYJET. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let passengersData = [];
+        let selectedFlight = JSON.parse(sessionStorage.getItem('selectedFlight') || '{}');
+        let baggageTotal = 0;
+
+        function initBookingPage() {
+            displayFlightSummary();
+            addPassengerForm();
+            
+            document.getElementById('addPassengerBtn').addEventListener('click', addPassengerForm);
+            document.getElementById('proceedPaymentBtn').addEventListener('click', proceedToPayment);
+            
+            // Baggage options
+            document.querySelectorAll('input[name="baggage"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateTotal);
+            });
+        }
+
+        function displayFlightSummary() {
+            document.getElementById('flightInfo').textContent = selectedFlight.flightId || 'BA 294';
+            document.getElementById('flightDate').textContent = new Date(selectedFlight.departDate).toLocaleDateString();
+            document.getElementById('cabinClass').textContent = (selectedFlight.cabin || 'economy').charAt(0).toUpperCase() + (selectedFlight.cabin || 'economy').slice(1);
+            document.getElementById('basePrice').textContent = '$' + (selectedFlight.price || 450);
+            document.getElementById('taxesAmount').textContent = '$' + Math.round((selectedFlight.price || 450) * 0.1);
+        }
+
+        function addPassengerForm() {
+            const passengerIndex = passengersData.length + 1;
+            const container = document.getElementById('passengersContainer');
+            
+            const form = document.createElement('div');
+            form.className = 'passenger-form';
+            form.innerHTML = `
+                <div class="passenger-header">
+                    <h3>Passenger ${passengerIndex}</h3>
+                    <button type="button" onclick="removePassenger(${passengerIndex - 1})" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                        Remove
+                    </button>
+                </div>
+
+                <div class="passenger-grid">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" class="firstName" placeholder="First Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name *</label>
+                        <input type="text" class="lastName" placeholder="Last Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" class="phone" placeholder="Phone Number">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" class="dob">
+                    </div>
+                    <div class="form-group">
+                        <label>Passport Number</label>
+                        <input type="text" class="passport" placeholder="Passport Number">
+                    </div>
+                </div>
+
+                <div class="form-group" style="grid-column: 1/-1;">
+                    <label>Seat Preference</label>
+                    <select class="seat">
+                        <option value="">Select Seat</option>
+                        <option value="1A">1A (Window)</option>
+                        <option value="1B">1B (Middle)</option>
+                        <option value="1C">1C (Aisle)</option>
+                        <option value="1D">1D (Window)</option>
+                        <option value="1E">1E (Middle)</option>
+                        <option value="1F">1F (Aisle)</option>
+                    </select>
+                </div>
+            `;
+
+            container.appendChild(form);
+            passengersData.push({});
+            
+            document.getElementById('passengerCount').textContent = passengersData.length;
+        }
+
+        function removePassenger(index) {
+            passengersData.splice(index, 1);
+            const container = document.getElementById('passengersContainer');
+            const forms = container.querySelectorAll('.passenger-form');
+            if (forms[index]) forms[index].remove();
+            document.getElementById('passengerCount').textContent = passengersData.length;
+        }
+
+        function updateTotal() {
+            baggageTotal = 0;
+            
+            if (document.getElementById('extraBaggage').checked) {
+                baggageTotal += 50 * passengersData.length;
+            }
+            if (document.getElementById('priorityBoarding').checked) {
+                baggageTotal += 30 * passengersData.length;
+            }
+
+            document.getElementById('baggageLine').style.display = baggageTotal > 0 ? 'flex' : 'none';
+            document.getElementById('baggageAmount').textContent = '$' + baggageTotal;
+
+            const basePrice = selectedFlight.price || 450;
+            const taxes = Math.round(basePrice * 0.1);
+            const total = (basePrice + taxes + baggageTotal) * passengersData.length;
+
+            document.getElementById('totalPrice').textContent = '$' + total;
+        }
+
+        function proceedToPayment() {
+            if (!document.getElementById('agreeTerms').checked) {
+                showAlert('Please agree to Terms and Conditions', 'warning');
+                return;
+            }
+
+            // Collect passenger data
+            const forms = document.querySelectorAll('.passenger-form');
+            passengersData = [];
+
+            forms.forEach((form, index) => {
+                const passenger = {
+                    first_name: form.querySelector('.firstName').value,
+                    last_name: form.querySelector('.lastName').value,
+                    email: form.querySelector('.email').value,
+                    phone: form.querySelector('.phone').value,
+                    date_of_birth: form.querySelector('.dob').value,
+                    passport_number: form.querySelector('.passport').value,
+                    seat_number: form.querySelector('.seat').value
+                };
+
+                if (!passenger.first_name || !passenger.last_name) {
+                    showAlert('Please fill in all passenger names', 'error');
+                    return;
+                }
+
+                passengersData.push(passenger);
+            });
+
+            // Store booking data
+            sessionStorage.setItem('bookingData', JSON.stringify({
+                flightId: selectedFlight.flightId,
+                passengers: passengersData,
+                cabinClass: selectedFlight.cabin,
+                baggage: {
+                    extra: document.getElementById('extraBaggage').checked,
+                    priority: document.getElementById('priorityBoarding').checked
+                },
+                specialRequests: document.getElementById('specialRequests').value,
+                totalPrice: document.getElementById('totalPrice').textContent.replace('$', '')
+            }));
+
+            window.location.href = 'payment.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', initBookingPage);
+    </script>
+</body>
+</html>
+<!-- Add this button to your booking details page -->
+<div id="payment-section" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
+    <h3 style="color: #004E89; margin-bottom: 15px;">
+        <i class="fas fa-credit-card"></i> Payment
+    </h3>
+    <p style="color: #666; margin-bottom: 20px;">Total Amount: <strong id="total-price">\$0.00</strong></p>
+    
+    <button id="pay-now-btn" onclick="goToPayment()" style="
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    ">
+        <i class="fas fa-lock"></i> Proceed to Payment
+    </button>
+</div>
+
+<script>
+    function goToPayment() {
+        // Get booking details
+        const bookingId = new URLSearchParams(window.location.search).get('id') || 'BK123456';
+        const amount = document.getElementById('total-price')?.textContent?.replace('\$', '') || '100';
+        const type = new URLSearchParams(window.location.search).get('type') || 'flight';
+        
+        // Redirect to payment page
+        window.location.href = `/pages/payment.html?booking_id=${bookingId}&amount=${amount}&type=${type}`;
+    }
+</script>
+

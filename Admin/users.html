@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Management - Admin Dashboard</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>Skybird Admin</span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="flights.html" class="nav-item">
+                <i class="fas fa-plane"></i>
+                <span>Flights</span>
+            </a>
+            <a href="bookings.html" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Bookings</span>
+            </a>
+            <a href="users.html" class="nav-item active">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="hotels.html" class="nav-item">
+                <i class="fas fa-hotel"></i>
+                <span>Hotels</span>
+            </a>
+            <a href="cars.html" class="nav-item">
+                <i class="fas fa-car"></i>
+                <span>Cars</span>
+            </a>
+            <a href="payments.html" class="nav-item">
+                <i class="fas fa-credit-card"></i>
+                <span>Payments</span>
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="admin-header-right">
+                <div class="search-bar">
+                    <input type="search" id="searchUsers" placeholder="Search users...">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <div class="header-icons">
+                    <button class="icon-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                </div>
+
+                <div class="admin-profile">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40" alt="Admin">
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-container">
+            <div class="page-header">
+                <h1>Users Management</h1>
+                <p>Manage customer accounts and profiles</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" style="margin-bottom: 30px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="stat-card">
+                    <div class="stat-icon bg-blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Users</h3>
+                        <p class="stat-number">5,632</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-green">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Active Users</h3>
+                        <p class="stat-number">4,521</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-orange">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>New This Month</h3>
+                        <p class="stat-number">342</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-purple">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Inactive Users</h3>
+                        <p class="stat-number">1,111</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                <select id="statusFilter" style="padding: 10px; border: 1px solid #e3e6f0; border-radius: 6px;">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+
+                <select id="membershipFilter" style="padding: 10px; border: 1px solid #e3e6f0; border-radius: 6px;">
+                    <option value="">All Membership</option>
+                    <option value="standard">Standard</option>
+                    <option value="premium">Premium</option>
+                    <option value="vip">VIP</option>
+                </select>
+
+                <button class="btn btn-outline" onclick="exportToCSV('usersTable', 'users.csv')">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+            </div>
+
+            <!-- Users Table -->
+            <div class="data-card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Joined</th>
+                                    <th>Membership</th>
+                                    <th>Status</th>
+                                    <th>Bookings</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>#001</strong></td>
+                                    <td>John Doe</td>
+                                    <td>john@example.com</td>
+                                    <td>+1-555-0101</td>
+                                    <td>Jan 15, 2025</td>
+                                    <td><span class="badge badge-success">Premium</span></td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>5</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewUser(1)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editUser(1)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="suspendUser(1)" title="Suspend">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#002</strong></td>
+                                    <td>Jane Smith</td>
+                                    <td>jane@example.com</td>
+                                    <td>+1-555-0102</td>
+                                    <td>Jan 20, 2025</td>
+                                    <td><span class="badge badge-warning">Standard</span></td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>3</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewUser(2)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editUser(2)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="suspendUser(2)" title="Suspend">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#003</strong></td>
+                                    <td>Bob Wilson</td>
+                                    <td>bob@example.com</td>
+                                    <td>+1-555-0103</td>
+                                    <td>Jan 10, 2025</td>
+                                    <td><span style="background: #8b5cf6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">VIP</span></td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>12</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewUser(3)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editUser(3)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="suspendUser(3)" title="Suspend">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#004</strong></td>
+                                    <td>Alice Brown</td>
+                                    <td>alice@example.com</td>
+                                    <td>+1-555-0104</td>
+                                    <td>Dec 25, 2024</td>
+                                    <td><span class="badge badge-warning">Standard</span></td>
+                                    <td><span class="badge badge-danger">Suspended</span></td>
+                                    <td>2</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewUser(4)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editUser(4)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="activateUser(4)" title="Activate">
+                                            <i class="fas fa-unlock"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#005</strong></td>
+                                    <td>Charlie Davis</td>
+                                    <td>charlie@example.com</td>
+                                    <td>+1-555-0105</td>
+                                    <td>Jan 05, 2025</td>
+                                    <td><span class="badge badge-warning">Standard</span></td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>7</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewUser(5)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editUser(5)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="suspendUser(5)" title="Suspend">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #0066cc;
+            margin: 0 5px;
+            transition: color 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            color: #ff6b35;
+        }
+
+        .badge-success { background-color: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-warning { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    </style>
+
+    <script src="js/admin.js"></script>
+    <script>
+        function viewUser(id) {
+            console.log('View user:', id);
+            alert('Viewing user profile #' + id);
+        }
+
+        function editUser(id) {
+            console.log('Edit user:', id);
+            alert('Editing user #' + id);
+        }
+
+        function suspendUser(id) {
+            if (confirm('Are you sure you want to suspend this user?')) {
+                showNotification('User suspended successfully', 'success');
+                console.log('Suspended user:', id);
+            }
+        }
+
+        function activateUser(id) {
+            if (confirm('Are you sure you want to activate this user?')) {
+                showNotification('User activated successfully', 'success');
+                console.log('Activated user:', id);
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 6px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                z-index: 3000;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        document.getElementById('searchUsers')?.addEventListener('input', function(e) {
+            filterTable('usersTable', e.target.value);
+        });
+
+        document.getElementById('statusFilter')?.addEventListener('change', function(e) {
+            console.log('Filter by status:', e.target.value);
+        });
+
+        document.getElementById('membershipFilter')?.addEventListener('change', function(e) {
+            console.log('Filter by membership:', e.target.value);
+        });
+    </script>
+</body>
+</html>

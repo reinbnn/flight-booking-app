@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - SKYJET</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #004E89 0%, #0077B6 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+        }
+        
+        .container { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 50px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
+            max-width: 600px; 
+            width: 100%; 
+            text-align: center; 
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #388e3c;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        h1 { 
+            color: #004E89; 
+            font-size: 2rem; 
+            margin-bottom: 10px; 
+        }
+
+        .subtitle { 
+            color: #666; 
+            font-size: 1.1rem; 
+            margin-bottom: 30px; 
+        }
+
+        .booking-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label { 
+            color: #666; 
+            font-weight: 600; 
+        }
+
+        .info-value { 
+            color: #004E89; 
+            font-weight: 700; 
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF6B35;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .actions { grid-template-columns: 1fr; }
+            .container { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+
+        <h1>Payment Successful!</h1>
+        <p class="subtitle">Your booking has been confirmed and payment processed.</p>
+
+        <div class="booking-info" id="bookingInfo">
+            <div class="info-row">
+                <span class="info-label">Booking ID:</span>
+                <span class="info-value" id="bookingId">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Amount Paid:</span>
+                <span class="info-value" id="amountPaid">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Payment Method:</span>
+                <span class="info-value" id="paymentMethod">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Confirmation Email:</span>
+                <span class="info-value" id="emailConfirm">Sent</span>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <p>Generating your invoice...</p>
+            <div class="spinner"></div>
+        </div>
+
+        <div class="actions">
+            <a href="/pages/my-bookings.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> My Bookings
+            </a>
+            <a href="#" class="btn btn-primary" id="downloadBtn" style="display:none;">
+                <i class="fas fa-download"></i> Download Invoice
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const bookingId = params.get('booking_id');
+            const amount = params.get('amount');
+            const method = params.get('method') || 'stripe';
+
+            // Display booking info
+            document.getElementById('bookingId').textContent = bookingId || 'N/A';
+            document.getElementById('amountPaid').textContent = '$' + (amount || '0.00');
+            document.getElementById('paymentMethod').textContent = method.charAt(0).toUpperCase() + method.slice(1);
+
+            // Generate invoice
+            try {
+                // Get payment ID from booking
+                const paymentResponse = await fetch(`/api/payment-details.php?booking_id=${bookingId}`);
+                const paymentData = await paymentResponse.json();
+
+                if (paymentData.success) {
+                    const paymentId = paymentData.payment.id;
+
+                    // Generate invoice
+                    document.getElementById('loading').style.display = 'block';
+                    
+                    const invoiceResponse = await fetch('/api/generate-invoice.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ payment_id: paymentId })
+                    });
+
+                    const invoiceData = await invoiceResponse.json();
+
+                    if (invoiceData.success) {
+                        document.getElementById('loading').style.display = 'none';
+                        const downloadBtn = document.getElementById('downloadBtn');
+                        downloadBtn.style.display = 'inline-flex';
+                        downloadBtn.href = `/api/download-invoice.php?id=${invoiceData.invoice_id}`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

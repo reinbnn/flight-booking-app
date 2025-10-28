@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Poppins', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #f9f9f9; }
+        .header { background: linear-gradient(135deg, #2196F3, #42A5F5); color: white; padding: 30px; text-align: center; }
+        .content { background: white; padding: 30px; }
+        .section { background: #e3f2fd; padding: 20px; border-left: 4px solid #2196F3; margin: 20px 0; }
+        .footer { background: #f0f0f0; padding: 20px; text-align: center; font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✓ Your Refund Has Been Processed</h1>
+            <p>The refund has been sent to your account</p>
+        </div>
+
+        <div class="content">
+            <p>Dear {{CUSTOMER_NAME}},</p>
+            
+            <p>Your refund has been successfully processed and sent to your account!</p>
+
+            <div class="section">
+                <h3>Refund Summary</h3>
+                <p><strong>Refund Amount:</strong> ${{AMOUNT}}</p>
+                <p><strong>Net Amount:</strong> ${{NET_AMOUNT}}</p>
+                <p><strong>Transaction ID:</strong> {{TRANSACTION_ID}}</p>
+                <p><strong>Booking:</strong> {{DEPARTURE}} → {{ARRIVAL}}</p>
+                <p><strong>Processed Date:</strong> {{PROCESSED_DATE}}</p>
+            </div>
+
+            <p><strong>Timeline:</strong> The refund should appear in your account within 5-7 business days, depending on your bank or payment provider.</p>
+
+            <p>Thank you for your business and understanding!</p>
+
+            <p>Best regards,<br>The SKYJET Team</p>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 SKYJET. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

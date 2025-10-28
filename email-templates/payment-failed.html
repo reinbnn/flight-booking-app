@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #d32f2f, #f57c00); color: white; padding: 30px; text-align: center; }
+        .content { background: white; padding: 30px; }
+        .alert { background: #ffebee; border-left: 4px solid #d32f2f; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .button { background: #FF6B35; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 15px 0; }
+        .footer { background: #f0f0f0; padding: 20px; text-align: center; color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ Payment Failed</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear <?= $data['customer_name'] ?>,</p>
+            
+            <div class="alert">
+                <strong>Payment Issue:</strong> We couldn't process your payment for booking <?= $data['booking_id'] ?>.
+                <p><strong>Reason:</strong> <?= $data['reason'] ?></p>
+            </div>
+
+            <p>Please try again or use a different payment method:</p>
+
+            <a href="<?= $data['retry_url'] ?>" class="button">Retry Payment</a>
+
+            <p style="color: #666; margin-top: 20px;">
+                If the problem persists, please contact our support team at <strong>support@skyjet.local</strong>.
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 SKYJET Travel. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

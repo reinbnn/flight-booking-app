@@ -1,0 +1,92 @@
+Updated Complete File Structure
+skybird-travel/
+│
+├── database/
+│   ├── migrations/
+│   │   ├── 001_create_initial_schema.sql          ← THIS FILE (NEW)
+│   │   ├── 002_seed_initial_data.sql              ← Initial data
+│   │   └── README.md                               ← Migration instructions
+│   └── backups/
+│       └── backup_2025.sql
+│
+├── api/
+│   ├── config.php                                  ← Database config
+│   ├── auth.php
+│   ├── users.php
+│   ├── flights.php
+│   ├── bookings.php
+│   ├── payments.php
+│   ├── hotels.php
+│   ├── cars.php
+│   ├── admin/
+│   │   └── dashboard.php
+│   ├── index.php                                   ← Router
+│   ├── .htaccess
+│   └── logs/
+│       ├── error.log
+│       ├── activity.log
+│       └── rate_limit/
+│
+├── admin/
+│   ├── index.html
+│   ├── login.html
+│   ├── flights.html
+│   ├── bookings.html
+│   ├── users.html
+│   ├── hotels.html
+│   ├── cars.html
+│   ├── payments.html
+│   ├── reports.html
+│   ├── settings.html
+│   ├── css/
+│   │   └── admin.css
+│   └── js/
+│       └── admin.js
+│
+├── pages/
+│   ├── index.html
+│   ├── flights.html
+│   ├── hotels.html
+│   ├── cars.html
+│   ├── login.html
+│   ├── register.html
+│   ├── booking-details.html
+│   ├── hotel-booking-details.html
+│   ├── car-booking-details.html
+│   ├── payment.html
+│   ├── confirmation.html
+│   ├── my-bookings.html
+│   ├── my-profile.html
+│   ├── contact.html
+│   ├── about.html
+│   ├── terms.html
+│   └── privacy.html
+│
+├── css/
+│   ├── style.css
+│   ├── responsive.css
+│   ├── animations.css
+│   └── admin.css
+│
+├── js/
+│   ├── main.js
+│   ├── api-client.js
+│   ├── auth.js
+│   ├── bookings.js
+│   └── admin.js
+│
+├── uploads/
+│   ├── profiles/
+│   ├── documents/
+│   └── invoices/
+│
+├── config/
+│   ├── .env                                        ← Environment variables
+│   ├── .env.example
+│   └── constants.php
+│
+├── .htaccess                                       ← Main rewrite rules
+├── index.html                                      ← Landing page
+├── README.md
+├── INSTALLATION.md
+└── .gitignore

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment - SKYJET</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #004E89 0%, #0077B6 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 50px auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 40px; }
+        
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { color: #004E89; font-size: 2rem; margin-bottom: 10px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        
+        .booking-summary { background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 30px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #666; }
+        .summary-row.total { border-top: 2px solid #ddd; padding-top: 10px; color: #004E89; font-weight: 700; font-size: 1.2rem; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: #004E89; font-weight: 600; margin-bottom: 8px; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s; }
+        input:focus, select:focus { outline: 0; border-color: #FF6B35; box-shadow: 0 0 10px rgba(255, 107, 53, 0.2); }
+        
+        #card-element { padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; }
+        
+        .pay-button { width: 100%; padding: 15px; background: linear-gradient(135deg, #FF6B35, #FF8C5A); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 20px; }
+        .pay-button:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4); }
+        .pay-button:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .error { color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #d32f2f; display: none; }
+        .success { color: #388e3c; background: #e8f5e9; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #388e3c; display: none; }
+        
+        .loading { display: none; text-align: center; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #FF6B35; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .security-badge { text-align: center; margin-top: 20px; color: #666; font-size: 0.9rem; }
+        .badge { display: inline-block; padding: 5px 10px; background: #e8f5e9; color: #388e3c; border-radius: 20px; margin: 0 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💳 Complete Your Payment</h1>
+            <p>Secure payment powered by Stripe</p>
+        </div>
+
+        <div id="error" class="error"></div>
+        <div id="success" class="success"></div>
+
+        <div class="booking-summary">
+            <div class="summary-row">
+                <span>Booking ID:</span>
+                <span id="booking-id-display">-</span>
+            </div>
+            <div class="summary-row">
+                <span>Service Type:</span>
+                <span id="service-type">Flight</span>
+            </div>
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="subtotal-display">\$0.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Tax (10%):</span>
+                <span id="tax-display">\$0.00</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total Amount:</span>
+                <span id="total-display">\$0.00</span>
+            </div>
+        </div>
+
+        <form id="payment-form">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" required placeholder="customer@example.com">
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="name" required placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+                <label>Card Details</label>
+                <div id="card-element"></div>
+            </div>
+
+            <button type="submit" class="pay-button" id="pay-btn">
+                <i class="fas fa-lock"></i> Pay Now
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing payment...</p>
+            </div>
+        </form>
+
+        <div class="security-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span class="badge">🔒 Secure</span>
+            <span class="badge">✓ PCI Compliant</span>
+            <span class="badge">💳 Encrypted</span>
+        </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_YOUR_PUBLIC_KEY_HERE');
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        // Get booking data from URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const bookingId = params.get('booking_id') || 'BK123456';
+        const amount = parseFloat(params.get('amount')) || 100;
+        const serviceType = params.get('type') || 'Flight';
+
+        // Calculate totals
+        const subtotal = amount;
+        const tax = subtotal * 0.10;
+        const total = subtotal + tax;
+
+        // Display booking info
+        document.getElementById('booking-id-display').textContent = bookingId;
+        document.getElementById('service-type').textContent = serviceType.charAt(0).toUpperCase() + serviceType.slice(1);
+        document.getElementById('subtotal-display').textContent = '\$' + subtotal.toFixed(2);
+        document.getElementById('tax-display').textContent = '\$' + tax.toFixed(2);
+        document.getElementById('total-display').textContent = '\$' + total.toFixed(2);
+        document.getElementById('pay-btn').textContent = `💳 Pay \$${total.toFixed(2)}`;
+
+        // Handle card errors
+        cardElement.addEventListener('change', (event) => {
+            const displayError = document.getElementById('error');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+                displayError.style.display = 'block';
+            } else {
+                displayError.style.display = 'none';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value;
+            const payBtn = document.getElementById('pay-btn');
+            const loading = document.getElementById('loading');
+
+            // Disable button and show loading
+            payBtn.disabled = true;
+            loading.style.display = 'block';
+
+            try {
+                // Step 1: Create Payment Intent
+                const intentResponse = await fetch('/api/create-payment-intent.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: total,
+                        booking_id: bookingId,
+                        email: email,
+                        description: `${serviceType} Booking - ${bookingId}`
+                    })
+                });
+
+                const intentData = await intentResponse.json();
+
+                if (!intentData.success) {
+                    throw new Error(intentData.error || 'Failed to create payment intent');
+                }
+
+                // Step 2: Confirm payment with card
+                const confirmResult = await stripe.confirmCardPayment(intentData.client_secret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            name: name,
+                            email: email
+                        }
+                    }
+                });
+
+                if (confirmResult.error) {
+                    throw new Error(confirmResult.error.message);
+                }
+
+                // Step 3: Verify payment on backend
+                const verifyResponse = await fetch('/api/confirm-payment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        intent_id: intentData.intent_id
+                    })
+                });
+
+                const verifyData = await verifyResponse.json();
+
+                if (verifyData.success && confirmResult.paymentIntent.status === 'succeeded') {
+                    // Payment successful!
+                    document.getElementById('success').textContent = '✅ Payment Successful! Redirecting...';
+                    document.getElementById('success').style.display = 'block';
+
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = `/pages/payment-success.html?booking_id=${bookingId}`;
+                    }, 2000);
+                } else {
+                    throw new Error('Payment verification failed');
+                }
+
+            } catch (error) {
+                console.error('Payment error:', error);
+                document.getElementById('error').textContent = '❌ ' + error.message;
+                document.getElementById('error').style.display = 'block';
+                payBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

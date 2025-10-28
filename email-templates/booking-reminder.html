@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #004E89, #0077B6); color: white; padding: 30px; text-align: center; }
+        .content { background: white; padding: 30px; }
+        .highlight { background: #fffbea; border-left: 4px solid #FF6B35; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .button { background: #FF6B35; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✈️ Your Trip is Coming Up!</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear <?= $data['customer_name'] ?>,</p>
+            
+            <div class="highlight">
+                <strong>Departure Date:</strong> <?= date('l, F j, Y', strtotime($data['departure_date'])) ?>
+            </div>
+
+            <p><strong>Your Itinerary:</strong></p>
+            <ul>
+                <li><strong>From:</strong> <?= $data['from_location'] ?></li>
+                <li><strong>To:</strong> <?= $data['to_location'] ?></li>
+                <li><strong>Booking ID:</strong> <?= $data['booking_id'] ?></li>
+            </ul>
+
+            <p><strong>Before you travel, don't forget to:</strong></p>
+            <ul>
+                <li>Check your travel documents and passport validity</li>
+                <li>Confirm check-in details with your service provider</li>
+                <li>Review any travel restrictions or requirements</li>
+                <li>Make sure you have any necessary visas</li>
+            </ul>
+
+            <a href="<?= $data['my_bookings_url'] ?>" class="button">View Booking Details</a>
+
+            <p style="color: #666; margin-top: 20px;">
+                Have a great trip! If you need any assistance, contact us at support@skyjet.local.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

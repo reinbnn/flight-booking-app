@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Search - SKYJET</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+
+        .navbar {
+            background: linear-gradient(135deg, #FF6B35, #004E89);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+        .header {
+            background: linear-gradient(135deg, #FF6B35, #004E89);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+        .search-container {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .filters-panel {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .filter-group {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1.5rem;
+        }
+
+        .filter-group:last-child {
+            border-bottom: none;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #004E89;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 5px rgba(255, 107, 53, 0.3);
+        }
+
+        .price-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .price-range input {
+            padding: 0.6rem;
+        }
+
+        .filter-buttons {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .btn {
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-search {
+            background: #FF6B35;
+            color: white;
+        }
+
+        .btn-search:hover {
+            background: #E55A24;
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .results-panel {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-count {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .sort-controls select {
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .result-item {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #FF6B35;
+            transition: all 0.3s;
+        }
+
+        .result-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .result-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: start;
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #004E89;
+        }
+
+        .result-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-item i {
+            color: #FF6B35;
+            width: 20px;
+        }
+
+        .result-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-book {
+            background: #FF6B35;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-book:hover {
+            background: #E55A24;
+        }
+
+        .btn-details {
+            background: #004E89;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-details:hover {
+            background: #003560;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .pagination a:hover {
+            background: #FF6B35;
+            color: white;
+            border-color: #FF6B35;
+        }
+
+        .pagination .active {
+            background: #FF6B35;
+            color: white;
+            border-color: #FF6B35;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF6B35;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #666;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        .filter-badge {
+            display: inline-block;
+            background: #FF6B35;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .filter-badge .remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                grid-template-columns: 1fr;
+            }
+            .filters-panel {
+                position: static;
+            }
+            .result-header {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo" style="color: white; text-decoration: none; font-weight: bold; font-size: 1.5rem;">
+                <i class="fas fa-plane-departure"></i> SKYJET
+            </a>
+            <div>
+                <a href="/" style="color: white; text-decoration: none; margin-left: 2rem;">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Advanced Search</h1>
+        <p>Find the perfect travel options with our advanced filtering</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container" style="padding: 2rem;">
+        <div class="search-container">
+            <!-- Left: Filters Panel -->
+            <div class="filters-panel">
+                <h3 style="margin-bottom: 1.5rem; color: #004E89;">Filters</h3>
+
+                <!-- Service Type -->
+                <div class="filter-group">
+                    <label for="service-type">Service Type</label>
+                    <select id="service-type" onchange="updateFilters()">
+                        <option value="flights">✈️ Flights</option>
+                        <option value="hotels">🏨 Hotels</option>
+                        <option value="cars">🚗 Cars</option>
+                    </select>
+                </div>
+
+                <!-- Flight Filters -->
+                <div id="flight-filters" class="filter-group">
+                    <label for="departure">Departure Airport</label>
+                    <input type="text" id="departure" placeholder="e.g., LHR">
+
+                    <label for="arrival" style="margin-top: 1rem;">Arrival Airport</label>
+                    <input type="text" id="arrival" placeholder="e.g., JFK">
+
+                    <label for="departure-date" style="margin-top: 1rem;">Departure Date</label>
+                    <input type="date" id="departure-date">
+
+                    <label for="min-seats" style="margin-top: 1rem;">Minimum Seats</label>
+                    <input type="number" id="min-seats" min="1" value="1">
+                </div>
+
+                <!-- Hotel Filters -->
+                <div id="hotel-filters" class="filter-group" style="display: none;">
+                    <label for="city">City</label>
+                    <input type="text" id="city" placeholder="e.g., London">
+
+                    <label for="country" style="margin-top: 1rem;">Country</label>
+                    <input type="text" id="country" placeholder="e
+\<Streaming stoppped because the conversation grew too long for this model\>
+
+sudo tee /var/www/html/flight-booking-app/pages/advanced-search.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Search - SKYJET</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+        .navbar { background: linear-gradient(135deg, #FF6B35, #004E89); color: white; padding: 1rem 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .header { background: linear-gradient(135deg, #FF6B35, #004E89); color: white; padding: 3rem 2rem; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .search-container { display: grid; grid-template-columns: 250px 1fr; gap: 2rem; padding: 2rem 0; }
+        .filters-panel { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); height: fit-content; position: sticky; top: 100px; }
+        .filter-group { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+        .filter-group:last-child { border-bottom: none; }
+        .filter-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #004E89; font-size: 0.9rem; }
+        .filter-group input, .filter-group select { width: 100%; padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; }
+        .filter-group input:focus, .filter-group select:focus { outline: none; border-color: #FF6B35; }
+        .btn { padding: 0.8rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; width: 100%; transition: all 0.3s; margin-top: 0.5rem; }
+        .btn-search { background: #FF6B35; color: white; }
+        .btn-search:hover { background: #E55A24; }
+        .btn-reset { background: #f0f0f0; color: #333; }
+        .results-panel { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .result-item { background: #f9f9f9; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; border-left: 4px solid #FF6B35; }
+        .result-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .result-title { font-size: 1.2rem; font-weight: 600; color: #004E89; }
+        .result-price { font-size: 1.5rem; font-weight: bold; color: #FF6B35; }
+        .result-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin: 1rem 0; font-size: 0.9rem; }
+        .detail-item { display: flex; align-items: center; gap: 0.5rem; }
+        .detail-item i { color: #FF6B35; width: 20px; }
+        .result-actions { display: flex; gap: 0.8rem; }
+        .btn-book { background: #FF6B35; color: white; padding: 0.7rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .btn-book:hover { background: #E55A24; }
+        .pagination { display: flex; justify-content: center; gap: 0.3rem; margin-top: 2rem; }
+        .pagination a, .pagination span { padding: 0.5rem 0.8rem; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; color: #333; }
+        .pagination a:hover { background: #FF6B35; color: white; }
+        .pagination .active { background: #FF6B35; color: white; }
+        .loading { text-align: center; padding: 2rem; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #FF6B35; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .no-results { text-align: center; padding: 3rem 2rem; color: #666; }
+        @media (max-width: 768px) { .search-container { grid-template-columns: 1fr; } .filters-panel { position: static; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" style="color: white; text-decoration: none; font-weight: bold; font-size: 1.5rem;">
+                <i class="fas fa-plane-departure"></i> SKYJET
+            </a>
+        </div>
+    </nav>
+
+    <div class="header">
+        <h1>Advanced Search</h1>
+        <p>Find your perfect travel with smart filters</p>
+    </div>
+
+    <div class="container">
+        <div class="search-container">
+            <!-- Filters -->
+            <div class="filters-panel">
+                <h3 style="margin-bottom: 1.5rem; color: #004E89; font-size: 1.1rem;">Filters</h3>
+
+                <div class="filter-group">
+                    <label>Service Type</label>
+                    <select id="service-type" onchange="changeService()">
+                        <option value="flights">✈️ Flights</option>
+                        <option value="hotels">🏨 Hotels</option>
+                        <option value="cars">🚗 Cars</option>
+                    </select>
+                </div>
+
+                <!-- Flight Filters -->
+                <div id="flight-filters">
+                    <div class="filter-group">
+                        <label>Departure</label>
+                        <input type="text" id="departure" placeholder="LHR, CDG, etc">
+                    </div>
+                    <div class="filter-group">
+                        <label>Arrival</label>
+                        <input type="text" id="arrival" placeholder="JFK, LAX, etc">
+                    </div>
+                    <div class="filter-group">
+                        <label>Date</label>
+                        <input type="date" id="departure-date">
+                    </div>
+                </div>
+
+                <!-- Hotel Filters -->
+                <div id="hotel-filters" style="display:none;">
+                    <div class="filter-group">
+                        <label>City</label>
+                        <input type="text" id="city" placeholder="London, Paris...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Check-in</label>
+                        <input type="date" id="check-in">
+                    </div>
+                    <div class="filter-group">
+                        <label>Check-out</label>
+                        <input type="date" id="check-out">
+                    </div>
+                </div>
+
+                <!-- Car Filters -->
+                <div id="car-filters" style="display:none;">
+                    <div class="filter-group">
+                        <label>Location</label>
+                        <input type="text" id="location" placeholder="City or Airport">
+                    </div>
+                    <div class="filter-group">
+                        <label>Type</label>
+                        <select id="car-type">
+                            <option value="">All Types</option>
+                            <option value="economy">Economy</option>
+                            <option value="compact">Compact</option>
+                            <option value="sedan">Sedan</option>
+                            <option value="suv">SUV</option>
+                            <option value="luxury">Luxury</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Price Range (Common) -->
+                <div class="filter-group">
+                    <label>Price Range</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <input type="number" id="min-price" placeholder="Min" value="0">
+                        <input type="number" id="max-price" placeholder="Max" value="9999">
+                    </div>
+                </div>
+
+                <!-- Sorting -->
+                <div class="filter-group">
+                    <label>Sort By</label>
+                    <select id="sort-by">
+                        <option value="price">Price (Low to High)</option>
+                        <option value="price-desc">Price (High to Low)</option>
+                        <option value="rating">Rating</option>
+                        <option value="latest">Latest</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-search" onclick="search()">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                <button class="btn btn-reset" onclick="resetFilters()">Reset</button>
+            </div>
+
+            <!-- Results -->
+            <div class="results-panel">
+                <div class="results-header">
+                    <h2 id="results-title">Search Results</h2>
+                    <span id="results-count" style="color: #666;">Enter filters and search</span>
+                </div>
+
+                <div id="results-container">
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>Use the filters to search</p>
+                    </div>
+                </div>
+
+                <div id="pagination-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let currentService = 'flights';
+
+        function changeService() {
+            currentService = document.getElementById('service-type').value;
+            const flightFilters = document.getElementById('flight-filters');
+            const hotelFilters = document.getElementById('hotel-filters');
+            const carFilters = document.getElementById('car-filters');
+
+            flightFilters.style.display = currentService === 'flights' ? 'block' : 'none';
+            hotelFilters.style.display = currentService === 'hotels' ? 'block' : 'none';
+            carFilters.style.display = currentService === 'cars' ? 'block' : 'none';
+        }
+
+        function search(page = 1) {
+            currentPage = page;
+            const container = document.getElementById('results-container');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Searching...</p></div>';
+
+            let url = `http://skyjet.local/api/search.php?type=${currentService}&page=${page}&limit=10`;
+
+            // Add filters based on service type
+            if (currentService === 'flights') {
+                const departure = document.getElementById('departure').value;
+                const arrival = document.getElementById('arrival').value;
+                const date = document.getElementById('departure-date').value;
+                const minPrice = document.getElementById('min-price').value;
+                const maxPrice = document.getElementById('max-price').value;
+
+                if (departure) url += `&departure=${encodeURIComponent(departure)}`;
+                if (arrival) url += `&arrival=${encodeURIComponent(arrival)}`;
+                if (date) url += `&departure_date=${date}`;
+                if (minPrice) url += `&min_price=${minPrice}`;
+                if (maxPrice) url += `&max_price=${maxPrice}`;
+            } else if (currentService === 'hotels') {
+                const city = document.getElementById('city').value;
+                const minPrice = document.getElementById('min-price').value;
+                const maxPrice = document.getElementById('max-price').value;
+
+                if (city) url += `&city=${encodeURIComponent(city)}`;
+                if (minPrice) url += `&min_price=${minPrice}`;
+                if (maxPrice) url += `&max_price=${maxPrice}`;
+            } else if (currentService === 'cars') {
+                const location = document.getElementById('location').value;
+                const carType = document.getElementById('car-type').value;
+                const minPrice = document.getElementById('min-price').value;
+                const maxPrice = document.getElementById('max-price').value;
+
+                if (location) url += `&location=${encodeURIComponent(location)}`;
+                if (carType) url += `&car_type=${carType}`;
+                if (minPrice) url += `&min_price=${minPrice}`;
+                if (maxPrice) url += `&max_price=${maxPrice}`;
+            }
+
+            const sortBy = document.getElementById('sort-by').value;
+            let sortColumn = 'price';
+            let sortOrder = 'ASC';
+
+            if (sortBy === 'price-desc') {
+                sortOrder = 'DESC';
+            } else if (sortBy === 'rating') {
+                sortColumn = 'rating';
+                sortOrder = 'DESC';
+            } else if (sortBy === 'latest') {
+                sortColumn = currentService === 'flights' ? 'departure_time' : 'created_at';
+                sortOrder = 'DESC';
+            }
+
+            url += `&sort_by=${sortColumn}&sort_order=${sortOrder}`;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => displayResults(data))
+                .catch(err => {
+                    container.innerHTML = `<div class="no-results"><i class="fas fa-exclamation-circle"></i><p>Error: ${err.message}</p></div>`;
+                });
+        }
+
+        function displayResults(data) {
+            const container = document.getElementById('results-container');
+            const countSpan = document.getElementById('results-count');
+
+            if (!data.success || data.data.length === 0) {
+                container.innerHTML = '<div class="no-results"><i class="fas fa-inbox"></i><p>No results found. Try different filters.</p></div>';
+                countSpan.textContent = 'No results';
+                document.getElementById('pagination-container').innerHTML = '';
+                return;
+            }
+
+            countSpan.textContent = `Found ${data.pagination.total} ${currentService}`;
+
+            let html = '';
+            data.data.forEach(item => {
+                if (currentService === 'flights') {
+                    html += createFlightCard(item);
+                } else if (currentService === 'hotels') {
+                    html += createHotelCard(item);
+                } else if (currentService === 'cars') {
+                    html += createCarCard(item);
+                }
+            });
+
+            container.innerHTML = html;
+            createPagination(data.pagination);
+        }
+
+        function createFlightCard(flight) {
+            return `
+                <div class="result-item">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                        <div>
+                            <div class="result-title">${flight.flight_number} - ${flight.departure_airport} → ${flight.arrival_airport}</div>
+                            <div class="result-details">
+                                <div class="detail-item"><i class="fas fa-clock"></i> ${flight.departure_time}</div>
+                                <div class="detail-item"><i class="fas fa-duration"></i> ${flight.duration}</div>
+                                <div class="detail-item"><i class="fas fa-users"></i> ${flight.available_seats} seats</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="result-price">$${parseFloat(flight.price).toFixed(2)}</div>
+                            <button class="btn-book" style="margin-top: 0.5rem;">Book</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createHotelCard(hotel) {
+            const stars = '⭐'.repeat(Math.floor(hotel.rating));
+            return `
+                <div class="result-item">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                        <div>
+                            <div class="result-title">${hotel.hotel_name} ${stars}</div>
+                            <div class="result-details">
+                                <div class="detail-item"><i class="fas fa-map-marker-alt"></i> ${hotel.city}, ${hotel.country}</div>
+                                <div class="detail-item"><i class="fas fa-bed"></i> ${hotel.available_rooms} rooms</div>
+                                <div class="detail-item"><i class="fas fa-star"></i> ${hotel.rating}/5</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="result-price">$${parseFloat(hotel.price_per_night).toFixed(2)}/night</div>
+                            <button class="btn-book" style="margin-top: 0.5rem;">Book</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createCarCard(car) {
+            return `
+                <div class="result-item">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                        <div>
+                            <div class="result-title">${car.model} (${car.car_type})</div>
+                            <div class="result-details">
+                                <div class="detail-item"><i class="fas fa-location-dot"></i> ${car.location}</div>
+                                <div class="detail-item"><i class="fas fa-users"></i> ${car.seating_capacity} seats</div>
+                                <div class="detail-item"><i class="fas fa-gas-pump"></i> ${car.fuel_type}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="result-price">$${parseFloat(car.daily_rate).toFixed(2)}/day</div>
+                            <button class="btn-book" style="margin-top: 0.5rem;">Book</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createPagination(pagination) {
+            const container = document.getElementById('pagination-container');
+            if (pagination.total_pages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '<div class="pagination">';
+
+            // Previous button
+            if (currentPage > 1) {
+                html += `<a onclick="search(${currentPage - 1})">← Previous</a>`;
+            }
+
+            // Page numbers
+            for (let i = 1; i <= pagination.total_pages; i++) {
+                if (i === currentPage) {
+                    html += `<span class="active">${i}</span>`;
+                } else if (i >= currentPage - 2 && i <= currentPage + 2) {
+                    html += `<a onclick="search(${i})">${i}</a>`;
+                }
+            }
+
+            // Next button
+            if (currentPage < pagination.total_pages) {
+                html += `<a onclick="search(${currentPage + 1})">Next →</a>`;
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function resetFilters() {
+            document.getElementById('departure').value = '';
+            document.getElementById('arrival').value = '';
+            document.getElementById('departure-date').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('check-in').value = '';
+            document.getElementById('check-out').value = '';
+            document.getElementById('location').value = '';
+            document.getElementById('car-type').value = '';
+            document.getElementById('min-price').value = '0';
+            document.getElementById('max-price').value = '9999';
+            document.getElementById('sort-by').value = 'price';
+            document.getElementById('results-container').innerHTML = '<div class="no-results"><i class="fas fa-search"></i><p>Enter filters and search</p></div>';
+            document.getElementById('pagination-container').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

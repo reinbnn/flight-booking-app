@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings Management - Admin Dashboard</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>Skybird Admin</span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="flights.html" class="nav-item">
+                <i class="fas fa-plane"></i>
+                <span>Flights</span>
+            </a>
+            <a href="bookings.html" class="nav-item active">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Bookings</span>
+            </a>
+            <a href="users.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="hotels.html" class="nav-item">
+                <i class="fas fa-hotel"></i>
+                <span>Hotels</span>
+            </a>
+            <a href="cars.html" class="nav-item">
+                <i class="fas fa-car"></i>
+                <span>Cars</span>
+            </a>
+            <a href="payments.html" class="nav-item">
+                <i class="fas fa-credit-card"></i>
+                <span>Payments</span>
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="admin-header-right">
+                <div class="search-bar">
+                    <input type="search" id="searchBookings" placeholder="Search bookings...">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <div class="header-icons">
+                    <button class="icon-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                </div>
+
+                <div class="admin-profile">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40" alt="Admin">
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-container">
+            <div class="page-header">
+                <h1>Bookings Management</h1>
+                <p>View and manage all customer bookings</p>
+            </div>
+
+            <!-- Filters -->
+            <div style="display: flex; gap: 15px; margin-bottom: 30px;">
+                <select id="statusFilter" style="padding: 10px; border: 1px solid #e3e6f0; border-radius: 6px;">
+                    <option value="">All Status</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="pending">Pending</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button class="btn btn-outline" onclick="exportToCSV('bookingsTable', 'bookings.csv')">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+            </div>
+
+            <!-- Bookings Table -->
+            <div class="data-card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table" id="bookingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Flight</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>#SK001</strong></td>
+                                    <td>John Doe</td>
+                                    <td>BA 294</td>
+                                    <td>Oct 25, 2025</td>
+                                    <td><span class="badge badge-success">Confirmed</span></td>
+                                    <td>\$495.00</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewBooking(1)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editBooking(1)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#SK002</strong></td>
+                                    <td>Jane Smith</td>
+                                    <td>AF 105</td>
+                                    <td>Oct 26, 2025</td>
+                                    <td><span class="badge badge-warning">Pending</span></td>
+                                    <td>\$320.00</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewBooking(2)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editBooking(2)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#SK003</strong></td>
+                                    <td>Bob Wilson</td>
+                                    <td>LH 201</td>
+                                    <td>Oct 27, 2025</td>
+                                    <td><span class="badge badge-success">Confirmed</span></td>
+                                    <td>\$410.00</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewBooking(3)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editBooking(3)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#SK004</strong></td>
+                                    <td>Alice Brown</td>
+                                    <td>KL 450</td>
+                                    <td>Oct 28, 2025</td>
+                                    <td><span class="badge badge-danger">Cancelled</span></td>
+                                    <td>\$650.00</td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewBooking(4)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="icon-btn" onclick="editBooking(4)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #0066cc;
+            margin: 0 5px;
+            transition: color 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            color: #ff6b35;
+        }
+    </style>
+
+    <script src="js/admin.js"></script>
+    <script>
+        function viewBooking(id) {
+            console.log('View booking:', id);
+            alert('Viewing booking #SK00' + id);
+        }
+
+        function editBooking(id) {
+            console.log('Edit booking:', id);
+            alert('Editing booking #SK00' + id);
+        }
+
+        document.getElementById('searchBookings')?.addEventListener('input', function(e) {
+            filterTable('bookingsTable', e.target.value);
+        });
+
+        document.getElementById('statusFilter')?.addEventListener('change', function(e) {
+            // Filter by status
+            console.log('Filter by status:', e.target.value);
+        });
+    </script>
+</body>
+</html>

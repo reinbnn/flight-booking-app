@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Poppins', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #f9f9f9; }
+        .header { background: linear-gradient(135deg, #4CAF50, #66BB6A); color: white; padding: 30px; text-align: center; }
+        .content { background: white; padding: 30px; }
+        .section { background: #f0f8f0; padding: 20px; border-left: 4px solid #4CAF50; margin: 20px 0; }
+        .footer { background: #f0f0f0; padding: 20px; text-align: center; font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✓ Your Refund Has Been Approved</h1>
+            <p>Great news! Your refund request has been approved.</p>
+        </div>
+
+        <div class="content">
+            <p>Dear {{CUSTOMER_NAME}},</p>
+            
+            <p>We're pleased to inform you that your refund request has been approved and is being processed.</p>
+
+            <div class="section">
+                <h3>Refund Details</h3>
+                <p><strong>Refund Amount:</strong> ${{AMOUNT}}</p>
+                <p><strong>Booking:</strong> {{DEPARTURE}} → {{ARRIVAL}}</p>
+                <p><strong>Reason:</strong> {{REASON}}</p>
+            </div>
+
+            <p>Your refund will be processed within 24 business hours and credited back to your original payment method.</p>
+
+            <p><strong>Processing Time:</strong> Depending on your bank, it may take 5-7 business days for the funds to appear in your account.</p>
+
+            <div class="section">
+                <p>If you have any questions, please contact our support team at support@skyjet.com</p>
+            </div>
+
+            <p>Thank you for choosing SKYJET!</p>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 SKYJET. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKYJET - Book Flights, Hotels & Cars</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-plane"></i> SKYJET
+            </div>
+            <ul class="nav-links">
+                <li><a href="#flights">Flights</a></li>
+                <li><a href="#hotels">Hotels</a></li>
+                <li><a href="#cars">Cars</a></li>
+                <li><a href="#" id="loginBtn">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Find Your Perfect Journey</h1>
+            <p>Book flights, hotels, and cars all in one place</p>
+        </div>
+    </section>
+
+    <!-- Search Forms -->
+    <section class="search-section">
+        <div class="container">
+            <!-- Flight Search -->
+            <div id="flights" class="search-form">
+                <h2>Search Flights</h2>
+                <form id="flightSearchForm">
+                    <div class="form-group">
+                        <input type="text" id="from" placeholder="From" required>
+                        <input type="text" id="to" placeholder="To" required>
+                        <input type="date" id="departure_date" required>
+                        <input type="number" id="passengers" value="1" min="1" max="9" required>
+                        <select id="cabin">
+                            <option value="economy">Economy</option>
+                            <option value="premium">Premium</option>
+                            <option value="business">Business</option>
+                            <option value="first">First</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Search Flights</button>
+                    </div>
+                </form>
+                <div id="flightResults" class="results"></div>
+            </div>
+
+            <!-- Hotel Search -->
+            <div id="hotels" class="search-form">
+                <h2>Search Hotels</h2>
+                <form id="hotelSearchForm">
+                    <div class="form-group">
+                        <input type="text" id="city" placeholder="City" required>
+                        <input type="date" id="checkIn" required>
+                        <input type="date" id="checkOut" required>
+                        <input type="number" id="guests" value="1" min="1" max="4" required>
+                        <button type="submit" class="btn btn-primary">Search Hotels</button>
+                    </div>
+                </form>
+                <div id="hotelResults" class="results"></div>
+            </div>
+
+            <!-- Car Search -->
+            <div id="cars" class="search-form">
+                <h2>Search Cars</h2>
+                <form id="carSearchForm">
+                    <div class="form-group">
+                        <input type="text" id="pickupLocation" placeholder="Pickup Location" required>
+                        <input type="date" id="pickupDate" required>
+                        <input type="date" id="dropoffDate" required>
+                        <button type="submit" class="btn btn-primary">Search Cars</button>
+                    </div>
+                </form>
+                <div id="carResults" class="results"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" id="registerLink">Register here</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Register</h2>
+            <form id="registerForm">
+                <input type="text" id="firstName" placeholder="First Name" required>
+                <input type="text" id="lastName" placeholder="Last Name" required>
+                <input type="email" id="registerEmail" placeholder="Email" required>
+                <input type="password" id="registerPassword" placeholder="Password" required>
+                <input type="tel" id="registerPhone" placeholder="Phone" required>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 SKYJET. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

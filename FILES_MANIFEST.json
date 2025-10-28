@@ -1,0 +1,185 @@
+{
+  "project": "SKYJET Flight Booking System",
+  "version": "1.0.0",
+  "date": "2025",
+  "structure": {
+    "config": {
+      "description": "Configuration files",
+      "files": [
+        {
+          "name": "db.php",
+          "purpose": "MySQL database connection",
+          "required": true
+        },
+        {
+          "name": "stripe.php",
+          "purpose": "Stripe API configuration",
+          "required": true
+        },
+        {
+          "name": "paypal.php",
+          "purpose": "PayPal sandbox & live credentials",
+          "required": true
+        },
+        {
+          "name": "email.php",
+          "purpose": "SMTP email configuration",
+          "required": true
+        }
+      ]
+    },
+    "classes": {
+      "description": "PHP service classes",
+      "files": [
+        {
+          "name": "EmailService.php",
+          "purpose": "Email handling with PHPMailer",
+          "methods": ["sendPaymentReceipt", "sendBookingConfirmation", "sendPaymentFailed", "sendTravelReminder"]
+        },
+        {
+          "name": "PayPalService.php",
+          "purpose": "PayPal API integration",
+          "methods": ["createOrder", "captureOrder", "refundPayment"]
+        }
+      ]
+    },
+    "api": {
+      "description": "REST API endpoints",
+      "stripe": [
+        {
+          "name": "payment-intent.php",
+          "method": "POST",
+          "purpose": "Create Stripe payment intent"
+        },
+        {
+          "name": "confirm-payment.php",
+          "method": "POST",
+          "purpose": "Confirm Stripe payment"
+        }
+      ],
+      "paypal": [
+        {
+          "name": "paypal-create-order.php",
+          "method": "POST",
+          "purpose": "Create PayPal order"
+        },
+        {
+          "name": "paypal-capture.php",
+          "method": "POST",
+          "purpose": "Capture PayPal payment"
+        },
+        {
+          "name": "paypal-return.php",
+          "method": "GET",
+          "purpose": "Handle PayPal return"
+        }
+      ],
+      "email": [
+        {
+          "name": "send-receipt.php",
+          "method": "POST",
+          "purpose": "Send payment receipt"
+        },
+        {
+          "name": "send-confirmation.php",
+          "method": "POST",
+          "purpose": "Send booking confirmation"
+        },
+        {
+          "name": "send-payment-failed.php",
+          "method": "POST",
+          "purpose": "Send payment failed alert"
+        },
+        {
+          "name": "send-reminder.php",
+          "method": "POST",
+          "purpose": "Send travel reminder"
+        },
+        {
+          "name": "send-cancellation.php",
+          "method": "POST",
+          "purpose": "Send cancellation notification"
+        }
+      ]
+    },
+    "pages": {
+      "description": "Frontend HTML pages",
+      "count": 10,
+      "files": [
+        "index.html",
+        "search.html",
+        "login.html",
+        "register.html",
+        "booking.html",
+        "payment.html",
+        "payment-methods.html",
+        "payment-success.html",
+        "my-bookings.html",
+        "profile.html"
+      ]
+    },
+    "admin": {
+      "description": "Admin panel pages",
+      "count": 7,
+      "files": [
+        "dashboard.php",
+        "payments.php",
+        "payment-methods.php",
+        "emails.php",
+        "bookings.php",
+        "users.php",
+        "settings.php"
+      ]
+    },
+    "email_templates": {
+      "description": "Email templates",
+      "count": 5,
+      "files": [
+        "payment-receipt.html",
+        "booking-confirmation.html",
+        "payment-failed.html",
+        "booking-reminder.html",
+        "booking-cancelled.html"
+      ]
+    },
+    "cron": {
+      "description": "Automation scripts",
+      "files": [
+        {
+          "name": "send-reminders.php",
+          "schedule": "0 2 * * *",
+          "purpose": "Send travel reminders 2 days before departure"
+        }
+      ]
+    },
+    "assets": {
+      "css": ["style.css"],
+      "js": ["main.js", "search.js", "auth.js", "payment.js"],
+      "images": ["logo.png", "hero.jpg", "favicon.ico"],
+      "fonts": ["poppins.woff2"]
+    }
+  },
+  "database": {
+    "name": "skyjet",
+    "tables": [
+      "users",
+      "bookings",
+      "payments",
+      "email_logs",
+      "invoices"
+    ]
+  },
+  "dependencies": {
+    "phpmailer": "^6.8",
+    "stripe/stripe-php": "^11.0",
+    "paypalcheckoutsdk/checkout-sdk": "^1.0"
+  },
+  "technologies": {
+    "backend": "PHP 7.4+",
+    "database": "MySQL 5.7+",
+    "frontend": "HTML5, CSS3, JavaScript",
+    "payment_gateways": ["Stripe", "PayPal"],
+    "email": "SMTP (PHPMailer)",
+    "server": "Apache 2.4+"
+  }
+}

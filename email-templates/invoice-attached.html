@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Email</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #f9f9f9; }
+        .header { background: linear-gradient(135deg, #004E89, #0077B6); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 2rem; margin-bottom: 10px; }
+        .content { background: white; padding: 30px; }
+        .invoice-section { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .invoice-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e0e0e0; }
+        .invoice-item:last-child { border-bottom: none; }
+        .invoice-total { font-size: 1.3rem; font-weight: bold; color: #FF6B35; text-align: right; margin-top: 15px; }
+        .btn { display: inline-block; background: linear-gradient(135deg, #FF6B35, #FF8C5A); color: white; padding: 12px 30px; border-radius: 5px; text-decoration: none; font-weight: 600; margin: 20px 0; }
+        .footer { background: #f0f0f0; padding: 20px; text-align: center; font-size: 0.9rem; color: #666; }
+        .footer a { color: #004E89; text-decoration: none; }
+        h2 { color: #004E89; margin-bottom: 15px; font-size: 1.3rem; }
+        p { margin-bottom: 10px; }
+        .note { background: #fff3e0; border-left: 4px solid #FF6B35; padding: 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>✓ Invoice Issued</h1>
+            <p>Your payment has been successfully processed</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p>Dear {{CUSTOMER_NAME}},</p>
+            
+            <p>Thank you for booking with SKYJET! Your payment has been successfully received and your invoice is attached to this email.</p>
+
+            <h2>Invoice Details</h2>
+            <div class="invoice-section">
+                <div class="invoice-item">
+                    <span><strong>Invoice Number:</strong></span>
+                    <span>{{INVOICE_NUMBER}}</span>
+                </div>
+                <div class="invoice-item">
+                    <span><strong>Invoice Date:</strong></span>
+                    <span>{{INVOICE_DATE}}</span>
+                </div>
+                <div class="invoice-item">
+                    <span><strong>Payment Method:</strong></span>
+                    <span>{{PAYMENT_METHOD}}</span>
+                </div>
+                <div class="invoice-item">
+                    <span><strong>Transaction ID:</strong></span>
+                    <span>{{TRANSACTION_ID}}</span>
+                </div>
+            </div>
+
+            <h2>Booking Information</h2>
+            <div class="invoice-section">
+                <div class="invoice-item">
+                    <span><strong>Booking ID:</strong></span>
+                    <span>{{BOOKING_ID}}</span>
+                </div>
+                <div class="invoice-item">
+                    <span><strong>Route:</strong></span>
+                    <span>{{DEPARTURE}} → {{ARRIVAL}}</span>
+                </div>
+                <div class="invoice-item">
+                    <span><strong>Departure:</strong></span>
+                    <span>{{DEPARTURE_DATE}}</span>
+                </div>
+                <div class="invoice-item">
+                    <span><strong>Passengers:</strong></span>
+                    <span>{{PASSENGERS}}</span>
+                </div>
+                <div class="invoice-item">
+                    <span><strong>Total Amount:</strong></span>
+                    <span style="font-weight: bold; color: #FF6B35;">{{TOTAL_AMOUNT}}</span>
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>📎 Attachment:</strong> Your detailed invoice PDF is attached to this email. Please keep it for your records.
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>Your booking confirmation and boarding details will be sent to you 24 hours before your departure. Make sure to:</p>
+            <ul>
+                <li>Check in online at least 24 hours before departure</li>
+                <li>Arrive at the airport 2 hours before departure</li>
+                <li>Bring your confirmation email and valid ID</li>
+            </ul>
+
+            <center>
+                <a href="https://skyjet.com/my-bookings" class="btn">View My Bookings</a>
+            </center>
+
+            <p style="margin-top: 30px;">If you have any questions or need assistance, please don't hesitate to <a href="mailto:support@skyjet.com" style="color: #004E89;">contact our support team</a>.</p>
+
+            <p style="margin-top: 20px;">
+                Thank you for choosing SKYJET!<br>
+                <strong>Best regards,</strong><br>
+                The SKYJET Team
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 SKYJET. All rights reserved.</p>
+            <p>
+                <a href="https://skyjet.com">Website</a> | 
+                <a href="https://skyjet.com/support">Support</a> | 
+                <a href="https://skyjet.com/privacy">Privacy Policy</a>
+            </p>
+            <p style="color: #999; font-size: 0.85rem; margin-top: 10px;">
+                This is an automated email. Please do not reply directly to this message.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

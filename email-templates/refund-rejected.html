@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Poppins', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #f9f9f9; }
+        .header { background: linear-gradient(135deg, #F44336, #EF5350); color: white; padding: 30px; text-align: center; }
+        .content { background: white; padding: 30px; }
+        .section { background: #ffebee; padding: 20px; border-left: 4px solid #F44336; margin: 20px 0; }
+        .footer { background: #f0f0f0; padding: 20px; text-align: center; font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Refund Request Decision</h1>
+            <p>Your refund request has been reviewed</p>
+        </div>
+
+        <div class="content">
+            <p>Dear {{CUSTOMER_NAME}},</p>
+            
+            <p>Thank you for submitting your refund request. After careful review, we are unable to approve it at this time.</p>
+
+            <div class="section">
+                <h3>Request Details</h3>
+                <p><strong>Booking:</strong> {{DEPARTURE}} → {{ARRIVAL}}</p>
+                <p><strong>Amount Requested:</strong> ${{AMOUNT}}</p>
+                <p><strong>Reason for Decision:</strong> {{REJECTION_REASON}}</p>
+            </div>
+
+            <p>Our refund policy is designed to be fair to both travelers and our business. If you believe this decision was made in error, please reply to this email with additional information.</p>
+
+            <p>We appreciate your understanding and hope to serve you better in the future.</p>
+
+            <p>Best regards,<br>The SKYJET Team</p>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 SKYJET. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

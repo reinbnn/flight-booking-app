@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking - SKYJET</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .hotel-booking-container {
+            max-width: 1000px;
+            margin: var(--spacing-2xl) auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: var(--spacing-xl);
+        }
+
+        .hotel-booking-form {
+            background: white;
+            padding: var(--spacing-2xl);
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .hotel-summary-sidebar {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .room-option {
+            background: var(--light-color);
+            padding: var(--spacing-lg);
+            border-radius: 6px;
+            margin-bottom: var(--spacing-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .room-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .room-option.selected {
+            background: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .hotel-booking-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hotel-summary-sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="../index.html" class="logo">
+                    <i class="fas fa-plane-departure"></i>
+                    <span>SKYJET</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hotel Booking Container -->
+    <div class="container">
+        <div class="hotel-booking-container">
+            <div class="hotel-booking-form">
+                <h2>Complete Your Hotel Booking</h2>
+
+                <!-- Guest Information -->
+                <div style="margin-bottom: var(--spacing-2xl); padding-bottom: var(--spacing-2xl); border-bottom: 1px solid var(--border-color);">
+                    <h3>Guest Information</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name *</label>
+                            <input type="text" id="guestFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name *</label>
+                            <input type="text" id="guestLastName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="guestEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="guestPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Special Requests</label>
+                        <textarea style="width: 100%; min-height: 100px; padding: var(--spacing-md); border: 1px solid var(--border-color); border-radius: 6px;" id="specialRequests" placeholder="Late check-in, high floor, etc."></textarea>
+                    </div>
+                </div>
+
+                <!-- Room Selection -->
+                <div style="margin-bottom: var(--spacing-2xl); padding-bottom: var(--spacing-2xl); border-bottom: 1px solid var(--border-color);">
+                    <h3>Select Your Room</h3>
+
+                    <div class="room-option selected" onclick="selectRoom(this, 'deluxe', 250)">
+                        <h4>Deluxe Room</h4>
+                        <p style="color: #666; margin: var(--spacing-sm) 0;">King bed, City view, Free WiFi</p>
+                        <p style="font-weight: 700; color: var(--secondary-color);">\$250 per night</p>
+                    </div>
+
+                    <div class="room-option" onclick="selectRoom(this, 'suite', 350)">
+                        <h4>Suite</h4>
+                        <p style="color: #666; margin: var(--spacing-sm) 0;">Living area, 2 bathrooms, City view</p>
+                        <p style="font-weight: 700; color: var(--secondary-color);">\$350 per night</p>
+                    </div>
+
+                    <div class="room-option" onclick="selectRoom(this, 'penthouse', 500)">
+                        <h4>Penthouse Suite</h4>
+                        <p style="color: #666; margin: var(--spacing-sm) 0;">Premium amenities, Panoramic view</p>
+                        <p style="font-weight: 700; color: var(--secondary-color);">\$500 per night</p>
+                    </div>
+                </div>
+
+                <!-- Add-Ons -->
+                <div style="margin-bottom: var(--spacing-2xl);">
+                    <h3>Add-Ons</h3>
+
+                    <label style="display: block; margin-bottom: var(--spacing-lg);">
+                        <input type="checkbox" id="breakfast"> Breakfast Package - \$15/person
+                    </label>
+
+                    <label style="display: block; margin-bottom: var(--spacing-lg);">
+                        <input type="checkbox" id="parking"> Parking - \$20/night
+                    </label>
+
+                    <label style="display: block; margin-bottom: var(--spacing-lg);">
+                        <input type="checkbox" id="airport"> Airport Transfer - \$50 round trip
+                    </label>
+
+                    <label>
+                        <input type="checkbox" id="travel-insurance"> Travel Insurance - \$25
+                    </label>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="proceedToHotelPayment()">
+                    Proceed to Payment
+                </button>
+            </div>
+
+            <!-- Summary Sidebar -->
+            <div class="hotel-summary-sidebar">
+                <h3 style="margin-bottom: var(--spacing-lg);">Booking Summary</h3>
+
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: var(--spacing-sm);">Hotel</p>
+                    <p style="font-weight: 700; margin-bottom: 0;" id="hotelNameDisplay">Luxury Plaza Hotel</p>
+                </div>
+
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: var(--spacing-sm);">Check-in</p>
+                    <p style="font-weight: 700;" id="checkinDisplay">Oct 28, 2025</p>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 0;">Check-out</p>
+                    <p style="font-weight: 700;" id="checkoutDisplay">Oct 31, 2025</p>
+                </div>
+
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: var(--spacing-sm);">Room</p>
+                    <p style="font-weight: 700;" id="roomTypeDisplay">Deluxe Room</p>
+                </div>
+
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <p style="font-size: 0.9rem; color: #666;">Nightly Rate: $<span id="nightlyRate">250</span></p>
+                    <p style="font-size: 0.9rem; color: #666;">Nights: <span id="nightsCount">3</span></p>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: var(--spacing-sm);">Subtotal: $<span id="subtotal">750</span></p>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem; margin-bottom: var(--spacing-lg);">
+                    <span>Total:</span>
+                    <span style="color: var(--secondary-color);">$<span id="hotelTotal">750</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: var(--spacing-2xl);">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--spacing-lg);">
+                <p>&copy; 2025 SKYJET. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let selectedRoomType = 'deluxe';
+        let selectedRoomPrice = 250;
+        const nightsCount = 3;
+
+        function selectRoom(element, type, price) {
+            document.querySelectorAll('.room-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedRoomType = type;
+            selectedRoomPrice = price;
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = selectedRoomPrice * nightsCount;
+            
+            if (document.getElementById('breakfast').checked) total += 15 * nightsCount;
+            if (document.getElementById('parking').checked) total += 20 * nightsCount;
+            if (document.getElementById('airport').checked) total += 50;
+            if (document.getElementById('travel-insurance').checked) total += 25;
+
+            document.getElementById('nightlyRate').textContent = selectedRoomPrice;
+            document.getElementById('subtotal').textContent = selectedRoomPrice * nightsCount;
+            document.getElementById('hotelTotal').textContent = total;
+            document.getElementById('roomTypeDisplay').textContent = selectedRoomType.charAt(0).toUpperCase() + selectedRoomType.slice(1);
+        }
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateTotal);
+        });
+
+        function proceedToHotelPayment() {
+            const guestData = {
+                firstName: document.getElementById('guestFirstName').value,
+                lastName: document.getElementById('guestLastName').value,
+                email: document.getElementById('guestEmail').value,
+                phone: document.getElementById('guestPhone').value,
+                specialRequests: document.getElementById('specialRequests').value,
+                roomType: selectedRoomType,
+                total: document.getElementById('hotelTotal').textContent
+            };
+
+            if (!guestData.firstName || !guestData.lastName || !guestData.email || !guestData.phone) {
+                showAlert('Please fill in all guest information', 'warning');
+                return;
+            }
+
+            sessionStorage.setItem('hotelBookingData', JSON.stringify(guestData));
+            window.location.href = 'payment.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', updateTotal);
+    </script>
+</body>
+</html>

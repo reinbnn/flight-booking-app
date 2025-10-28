@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Booking - SKYJET</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="../index.html" class="logo">
+                    <i class="fas fa-plane-departure"></i>
+                    <span>SKYJET</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Car Booking Container -->
+    <div class="container" style="max-width: 1000px; margin: var(--spacing-2xl) auto; display: grid; grid-template-columns: 1fr 350px; gap: var(--spacing-xl);">
+        <div style="background: white; padding: var(--spacing-2xl); border-radius: 8px; box-shadow: var(--box-shadow);">
+            <h2>Complete Your Car Rental</h2>
+
+            <!-- Driver Information -->
+            <div style="margin-bottom: var(--spacing-2xl); padding-bottom: var(--spacing-2xl); border-bottom: 1px solid var(--border-color);">
+                <h3>Driver Information</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" id="driverFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name *</label>
+                        <input type="text" id="driverLastName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="driverEmail" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="driverPhone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Driver's License Number *</label>
+                    <input type="text" id="licenseNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label>License Expiration Date *</label>
+                    <input type="date" id="licenseExpiration" required>
+                </div>
+            </div>
+
+            <!-- Rental Options -->
+            <div style="margin-bottom: var(--spacing-2xl); padding-bottom: var(--spacing-2xl); border-bottom: 1px solid var(--border-color);">
+                <h3>Rental Options</h3>
+
+                <label style="display: block; margin-bottom: var(--spacing-lg); padding: var(--spacing-lg); background: var(--light-color); border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" id="insurance"> Additional Insurance - \$15/day
+                </label>
+
+                <label style="display: block; margin-bottom: var(--spacing-lg); padding: var(--spacing-lg); background: var(--light-color); border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" id="gps"> GPS Navigation - \$10/day
+                </label>
+
+                <label style="display: block; margin-bottom: var(--spacing-lg); padding: var(--spacing-lg); background: var(--light-color); border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" id="childSeat"> Child Seat - \$25/rental
+                </label>
+
+                <label style="display: block; padding: var(--spacing-lg); background: var(--light-color); border-radius: 6px; cursor: pointer;">
+                    <input type="checkbox" id="roadAssistance"> Roadside Assistance - \$20/rental
+                </label>
+            </div>
+
+            <!-- Additional Notes -->
+            <div style="margin-bottom: var(--spacing-2xl);">
+                <h3>Special Requests</h3>
+                <textarea style="width: 100%; min-height: 100px; padding: var(--spacing-md); border: 1px solid var(--border-color); border-radius: 6px;" id="carSpecialRequests" placeholder="Any special requests..."></textarea>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="proceedToCarPayment()">
+                Proceed to Payment
+            </button>
+        </div>
+
+        <!-- Sidebar -->
+        <div style="background: white; padding: var(--spacing-lg); border-radius: 8px; box-shadow: var(--box-shadow); height: fit-content;">
+            <h3 style="margin-bottom: var(--spacing-lg);">Rental Summary</h3>
+
+            <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                <p style="font-size: 0.9rem; color: #666;">Car</p>
+                <p style="font-weight: 700;" id="carNameDisplay">Toyota Corolla</p>
+            </div>
+
+            <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                <p style="font-size: 0.9rem; color: #666;">Daily Rate: $<span id="dailyRateDisplay">45</span></p>
+                <p style="font-size: 0.9rem; color: #666;">Rental Days: <span id="daysDisplay">3</span></p>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: var(--spacing-sm);">Subtotal: $<span id="carSubtotal">135</span></p>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem;">
+                <span>Total:</span>
+                <span style="color: var(--secondary-color);">$<span id="carTotal">135</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: var(--spacing-2xl);">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 SKYJET. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        const rentalDays = 3;
+        const dailyRate = 45;
+
+        function updateCarTotal() {
+            let total = dailyRate * rentalDays;
+            
+            if (document.getElementById('insurance').checked) total += 15 * rentalDays;
+            if (document.getElementById('gps').checked) total += 10 * rentalDays;
+            if (document.getElementById('childSeat').checked) total += 25;
+            if (document.getElementById('roadAssistance').checked) total += 20;
+
+            document.getElementById('carTotal').textContent = total;
+        }
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateCarTotal);
+        });
+
+        function proceedToCarPayment() {
+            const driverData = {
+                firstName: document.getElementById('driverFirstName').value,
+                lastName: document.getElementById('driverLastName').value,
+                email: document.getElementById('driverEmail').value,
+                phone: document.getElementById('driverPhone').value,
+                licenseNumber: document.getElementById('licenseNumber').value,
+                licenseExpiration: document.getElementById('licenseExpiration').value,
+                total: document.getElementById('carTotal').textContent
+            };
+
+            if (!driverData.firstName || !driverData.lastName || !driverData.email || !driverData.phone || !driverData.licenseNumber) {
+                showAlert('Please fill in all driver information', 'warning');
+                return;
+            }
+
+            sessionStorage.setItem('carBookingData', JSON.stringify(driverData));
+            window.location.href = 'payment.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', updateCarTotal);
+    </script>
+</body>
+</html>

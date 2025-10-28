@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background: #616161; color: white; padding: 30px; text-align: center; }
+        .content { background: white; padding: 30px; }
+        .alert { background: #e8f5e9; border-left: 4px solid #388e3c; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .detail { padding: 10px 0; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Booking Cancelled</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear <?= $data['customer_name'] ?>,</p>
+            
+            <p>Your booking has been successfully cancelled.</p>
+
+            <div class="alert">
+                <strong>Refund Amount:</strong> $<?= number_format($data['refund_amount'], 2) ?>
+                <p>Your refund will be processed within 5-7 business days.</p>
+            </div>
+
+            <p><strong>Cancellation Details:</strong></p>
+            <div class="detail">
+                <strong>Booking ID:</strong> <?= $data['booking_id'] ?>
+            </div>
+            <div class="detail">
+                <strong>Cancellation Date:</strong> <?= date('M d, Y H:i A', strtotime($data['cancellation_date'])) ?>
+            </div>
+
+            <p style="color: #666; margin-top: 20px;">
+                If you have any questions about this cancellation, please contact our support team.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SKYJET</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body class="admin-body">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>Skybird Admin</span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item active">
+                <i class="fas fa-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="flights.html" class="nav-item">
+                <i class="fas fa-plane"></i>
+                <span>Flights</span>
+            </a>
+            <a href="bookings.html" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Bookings</span>
+            </a>
+            <a href="users.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="hotels.html" class="nav-item">
+                <i class="fas fa-hotel"></i>
+                <span>Hotels</span>
+            </a>
+            <a href="cars.html" class="nav-item">
+                <i class="fas fa-car"></i>
+                <span>Cars</span>
+            </a>
+            <a href="payments.html" class="nav-item">
+                <i class="fas fa-credit-card"></i>
+                <span>Payments</span>
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Top Navigation Bar -->
+        <header class="admin-header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="admin-header-right">
+                <div class="search-bar">
+                    <input type="search" placeholder="Search...">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <div class="header-icons">
+                    <button class="icon-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="icon-btn" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge">2</span>
+                    </button>
+                </div>
+
+                <div class="admin-profile">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40" alt="Admin">
+                    <div class="profile-info">
+                        <p class="profile-name">John Admin</p>
+                        <p class="profile-role">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="admin-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p>Welcome back! Here's your business performance overview.</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon bg-blue">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Flights</h3>
+                        <p class="stat-number">2,547</p>
+                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 12% from last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-green">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Bookings</h3>
+                        <p class="stat-number">1,824</p>
+                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 8% from last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-orange">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Revenue</h3>
+                        <p class="stat-number">\$847,250</p>
+                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 15% from last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-purple">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Users</h3>
+                        <p class="stat-number">5,632</p>
+                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 10% from last month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <!-- Revenue Chart -->
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>Revenue Trend</h3>
+                        <div class="chart-controls">
+                            <button class="chart-btn active">Week</button>
+                            <button class="chart-btn">Month</button>
+                            <button class="chart-btn">Year</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Booking Status Chart -->
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>Booking Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables Section -->
+            <div class="tables-grid">
+                <!-- Recent Bookings -->
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>Recent Bookings</h3>
+                        <a href="bookings.html" class="link-btn">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Customer</th>
+                                        <th>Flight</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#SK001</td>
+                                        <td>John Doe</td>
+                                        <td>BA 294 (LHR → JFK)</td>
+                                        <td><span class="badge badge-success">Confirmed</span></td>
+                                        <td>\$495.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#SK002</td>
+                                        <td>Jane Smith</td>
+                                        <td>AF 105 (LHR → CDG)</td>
+                                        <td><span class="badge badge-warning">Pending</span></td>
+                                        <td>\$320.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#SK003</td>
+                                        <td>Bob Wilson</td>
+                                        <td>LH 201 (LHR → FRA)</td>
+                                        <td><span class="badge badge-success">Confirmed</span></td>
+                                        <td>\$410.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#SK004</td>
+                                        <td>Alice Brown</td>
+                                        <td>KL 450 (AMS → LAX)</td>
+                                        <td><span class="badge badge-danger">Cancelled</span></td>
+                                        <td>\$650.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#SK005</td>
+                                        <td>Charlie Davis</td>
+                                        <td>BA 482 (LHR → SFO)</td>
+                                        <td><span class="badge badge-success">Confirmed</span></td>
+                                        <td>\$580.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Routes -->
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>Top Routes</h3>
+                        <a href="reports.html" class="link-btn">View Report</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="route-list">
+                            <div class="route-item">
+                                <div class="route-info">
+                                    <h4>London → New York</h4>
+                                    <p class="route-code">LHR → JFK</p>
+                                </div>
+                                <div class="route-stats">
+                                    <p class="route-count">542 bookings</p>
+                                    <div class="route-bar">
+                                        <div class="route-fill" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="route-item">
+                                <div class="route-info">
+                                    <h4>Paris → London</h4>
+                                    <p class="route-code">CDG → LHR</p>
+                                </div>
+                                <div class="route-stats">
+                                    <p class="route-count">438 bookings</p>
+                                    <div class="route-bar">
+                                        <div class="route-fill" style="width: 80%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="route-item">
+                                <div class="route-info">
+                                    <h4>Amsterdam → Frankfurt</h4>
+                                    <p class="route-code">AMS → FRA</p>
+                                </div>
+                                <div class="route-stats">
+                                    <p class="route-count">365 bookings</p>
+                                    <div class="route-bar">
+                                        <div class="route-fill" style="width: 67%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="route-item">
+                                <div class="route-info">
+                                    <h4>Tokyo → Sydney</h4>
+                                    <p class="route-code">NRT → SYD</p>
+                                </div>
+                                <div class="route-stats">
+                                    <p class="route-count">298 bookings</p>
+                                    <div class="route-bar">
+                                        <div class="route-fill" style="width: 55%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="route-item">
+                                <div class="route-info">
+                                    <h4>Dubai → London</h4>
+                                    <p class="route-code">DXB → LHR</p>
+                                </div>
+                                <div class="route-stats">
+                                    <p class="route-count">245 bookings</p>
+                                    <div class="route-bar">
+                                        <div class="route-fill" style="width: 45%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Feed -->
+            <div class="data-card">
+                <div class="card-header">
+                    <h3>Recent Activity</h3>
+                </div>
+                <div class="card-body">
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <div class="activity-icon bg-blue">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Flight BA 294</strong> added to system</p>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon bg-green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Booking #SK001</strong> confirmed by customer</p>
+                                <span class="activity-time">4 hours ago</span>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon bg-orange">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>New user registered</strong> - John Doe</p>
+                                <span class="activity-time">6 hours ago</span>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon bg-red">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Booking #SK002</strong> cancelled by customer</p>
+                                <span class="activity-time">8 hours ago</span>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon bg-purple">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Payment received</strong> for booking #SK003</p>
+                                <span class="activity-time">10 hours ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/admin.js"></script>
+    <script>
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [12000, 19000, 15000, 22000, 25000, 20000, 23000],
+                    borderColor: '#0066cc',
+                    backgroundColor: 'rgba(0, 102, 204, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#0066cc'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value/1000 + 'k';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Status Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Confirmed', 'Pending', 'Cancelled'],
+                datasets: [{
+                    data: [65, 20, 15],
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                    borderColor: 'white',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

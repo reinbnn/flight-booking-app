@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments Management - Admin Dashboard</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>Skybird Admin</span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="flights.html" class="nav-item">
+                <i class="fas fa-plane"></i>
+                <span>Flights</span>
+            </a>
+            <a href="bookings.html" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Bookings</span>
+            </a>
+            <a href="users.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="hotels.html" class="nav-item">
+                <i class="fas fa-hotel"></i>
+                <span>Hotels</span>
+            </a>
+            <a href="cars.html" class="nav-item">
+                <i class="fas fa-car"></i>
+                <span>Cars</span>
+            </a>
+            <a href="payments.html" class="nav-item active">
+                <i class="fas fa-credit-card"></i>
+                <span>Payments</span>
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="admin-header-right">
+                <div class="search-bar">
+                    <input type="search" id="searchPayments" placeholder="Search transactions...">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <div class="header-icons">
+                    <button class="icon-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                </div>
+
+                <div class="admin-profile">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40" alt="Admin">
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-container">
+            <div class="page-header">
+                <h1>Payments Management</h1>
+                <p>Track and manage all transactions</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" style="margin-bottom: 30px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="stat-card">
+                    <div class="stat-icon bg-green">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Revenue</h3>
+                        <p class="stat-number">\$847,250</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-blue">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Completed</h3>
+                        <p class="stat-number">1,824</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-orange">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Pending</h3>
+                        <p class="stat-number">45</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-red">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Failed</h3>
+                        <p class="stat-number">12</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                <select id="statusFilter" style="padding: 10px; border: 1px solid #e3e6f0; border-radius: 6px;">
+                    <option value="">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                    <option value="failed">Failed</option>
+                    <option value="refunded">Refunded</option>
+                </select>
+
+                <select id="methodFilter" style="padding: 10px; border: 1px solid #e3e6f0; border-radius: 6px;">
+                    <option value="">All Methods</option>
+                    <option value="credit_card">Credit Card</option>
+                    <option value="debit_card">Debit Card</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="bank_transfer">Bank Transfer</option>
+                </select>
+
+                <button class="btn btn-outline" onclick="exportToCSV('paymentsTable', 'payments.csv')">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+            </div>
+
+            <!-- Payments Table -->
+            <div class="data-card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table" id="paymentsTable">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>TXN001</strong></td>
+                                    <td>#SK001</td>
+                                    <td>John Doe</td>
+                                    <td>\$495.00</td>
+                                    <td>Credit Card</td>
+                                    <td>Oct 25, 2025</td>
+                                    <td><span class="badge badge-success">Completed</span></td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewPayment(1)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TXN002</strong></td>
+                                    <td>#SK002</td>
+                                    <td>Jane Smith</td>
+                                    <td>\$320.00</td>
+                                    <td>PayPal</td>
+                                    <td>Oct 25, 2025</td>
+                                    <td><span class="badge badge-warning">Pending</span></td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewPayment(2)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TXN003</strong></td>
+                                    <td>#SK003</td>
+                                    <td>Bob Wilson</td>
+                                    <td>\$410.00</td>
+                                    <td>Debit Card</td>
+                                    <td>Oct 25, 2025</td>
+                                    <td><span class="badge badge-success">Completed</span></td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewPayment(3)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TXN004</strong></td>
+                                    <td>#SK004</td>
+                                    <td>Alice Brown</td>
+                                    <td>\$650.00</td>
+                                    <td>Bank Transfer</td>
+                                    <td>Oct 24, 2025</td>
+                                    <td><span class="badge badge-danger">Failed</span></td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewPayment(4)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TXN005</strong></td>
+                                    <td>#SK005</td>
+                                    <td>Charlie Davis</td>
+                                    <td>\$580.00</td>
+                                    <td>Credit Card</td>
+                                    <td>Oct 24, 2025</td>
+                                    <td><span style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Refunded</span></td>
+                                    <td>
+                                        <button class="icon-btn" onclick="viewPayment(5)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #0066cc;
+            margin: 0 5px;
+            transition: color 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            color: #ff6b35;
+        }
+
+        .badge-success { background-color: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-warning { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    </style>
+
+    <script src="js/admin.js"></script>
+    <script>
+        function viewPayment(id) {
+            console.log('View payment:', id);
+            alert('Viewing payment #TXN00' + id);
+        }
+
+        document.getElementById('searchPayments')?.addEventListener('input', function(e) {
+            filterTable('paymentsTable', e.target.value);
+        });
+
+        document.getElementById('statusFilter')?.addEventListener('change', function(e) {
+            console.log('Filter by status:', e.target.value);
+        });
+
+        document.getElementById('methodFilter')?.addEventListener('change', function(e) {
+            console.log('Filter by method:', e.target.value);
+        });
+    </script>
+</body>
+</html>

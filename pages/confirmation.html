@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation - SKYJET</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .confirmation-container {
+            max-width: 700px;
+            margin: var(--spacing-2xl) auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow-lg);
+            overflow: hidden;
+        }
+
+        .confirmation-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: var(--spacing-2xl);
+            text-align: center;
+        }
+
+        .confirmation-header i {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .confirmation-body {
+            padding: var(--spacing-2xl);
+        }
+
+        .confirmation-section {
+            margin-bottom: var(--spacing-2xl);
+            padding-bottom: var(--spacing-2xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .confirmation-section:last-child {
+            border-bottom: none;
+        }
+
+        .confirmation-section h3 {
+            margin-bottom: var(--spacing-lg);
+            color: var(--primary-color);
+        }
+
+        .confirmation-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px dotted var(--border-color);
+        }
+
+        .confirmation-row:last-child {
+            border-bottom: none;
+        }
+
+        .confirmation-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .confirmation-value {
+            font-weight: 700;
+        }
+
+        .confirmation-code {
+            background: var(--light-color);
+            padding: var(--spacing-lg);
+            border-radius: 6px;
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .confirmation-code p {
+            margin-bottom: var(--spacing-sm);
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .confirmation-code .code {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: monospace;
+            color: var(--success-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        .email-notice {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: var(--spacing-lg);
+            border-radius: 6px;
+            margin-top: var(--spacing-lg);
+        }
+
+        .email-notice i {
+            color: var(--success-color);
+            margin-right: var(--spacing-sm);
+        }
+
+        @media (max-width: 768px) {
+            .confirmation-container {
+                margin: var(--spacing-lg);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .confirmation-row {
+                flex-direction: column;
+            }
+
+            .confirmation-label,
+            .confirmation-value {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="../index.html" class="logo">
+                    <i class="fas fa-plane-departure"></i>
+                    <span>SKYJET</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Confirmation Container -->
+    <div class="confirmation-container animate-fadeInUp">
+        <div class="confirmation-header">
+            <div>
+                <i class="fas fa-check-circle"></i>
+                <h1>Booking Confirmed!</h1>
+                <p>Your flight has been successfully booked</p>
+            </div>
+        </div>
+
+        <div class="confirmation-body">
+            <!-- Booking Code -->
+            <div class="confirmation-code">
+                <p>Your Booking Reference</p>
+                <div class="code" id="bookingCode">SK20251025ABC123</div>
+            </div>
+
+            <!-- Flight Details -->
+            <div class="confirmation-section">
+                <h3><i class="fas fa-plane"></i> Flight Details</h3>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Flight Number:</span>
+                    <span class="confirmation-value" id="flightNumber">BA 294</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Date:</span>
+                    <span class="confirmation-value" id="flightDate">October 25, 2025</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Departure:</span>
+                    <span class="confirmation-value" id="departure">08:00 AM</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Route:</span>
+                    <span class="confirmation-value" id="route">LHR → JFK</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Cabin Class:</span>
+                    <span class="confirmation-value" id="cabinClass">Economy</span>
+                </div>
+            </div>
+
+            <!-- Passenger Details -->
+            <div class="confirmation-section">
+                <h3><i class="fas fa-users"></i> Passenger Details</h3>
+                <div id="passengersList"></div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="confirmation-section">
+                <h3><i class="fas fa-credit-card"></i> Payment Summary</h3>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Base Fare:</span>
+                    <span class="confirmation-value" id="paymentBase">$450</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Taxes & Fees:</span>
+                    <span class="confirmation-value" id="paymentTaxes">$45</span>
+                </div>
+                <div class="confirmation-row" id="paymentBaggageRow" style="display: none;">
+                    <span class="confirmation-label">Baggage:</span>
+                    <span class="confirmation-value" id="paymentBaggage">$0</span>
+                </div>
+                <div class="confirmation-row" style="border-bottom-width: 2px; margin-bottom: var(--spacing-lg);">
+                    <span class="confirmation-label" style="font-size: 1.1rem;">Total Amount Paid:</span>
+                    <span class="confirmation-value" style="font-size: 1.3rem; color: var(--success-color);" id="totalPaid">$495</span>
+                </div>
+            </div>
+
+            <!-- Email Confirmation -->
+            <div class="email-notice">
+                <i class="fas fa-envelope"></i>
+                <span>A confirmation email has been sent to <strong id="confirmationEmail">user@example.com</strong>. Please save your booking reference.</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="viewBooking()">
+                    <i class="fas fa-ticket-alt"></i> View Booking
+                </button>
+                <button class="btn btn-outline" onclick="downloadReceipt()">
+                    <i class="fas fa-download"></i> Download Receipt
+                </button>
+            </div>
+
+            <!-- Additional Info -->
+            <div style="background: var(--light-color); padding: var(--spacing-lg); border-radius: 6px; margin-top: var(--spacing-xl);">
+                <h4 style="margin-bottom: var(--spacing-md);">What's Next?</h4>
+                <ul style="margin-left: var(--spacing-lg);">
+                    <li>Check-in opens 24 hours before departure</li>
+                    <li>Arrive at the airport 3 hours early for international flights</li>
+                    <li>Carry your booking reference and ID</li>
+                    <li>Need to make changes? <a href="../pages/my-bookings.html">Manage your booking</a></li>
+                </ul>
+            </div>
+
+            <!-- Return Home -->
+            <button class="btn btn-outline" style="width: 100%; margin-top: var(--spacing-xl);" onclick="window.location.href='../index.html'">
+                Back to Home
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: var(--spacing-2xl);">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--spacing-lg);">
+                <p>&copy; 2025 SKYJET. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        function initConfirmation() {
+            const bookingData = JSON.parse(sessionStorage.getItem('bookingData') || '{}');
+            const selectedFlight = JSON.parse(sessionStorage.getItem('selectedFlight') || '{}');
+
+            // Populate details
+            document.getElementById('bookingCode').textContent = 'SK' + Date.now().toString().substr(-8);
+            document.getElementById('flightDate').textContent = new Date(selectedFlight.departDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('route').textContent = (selectedFlight.from || 'LHR') + ' → ' + (selectedFlight.to || 'JFK');
+            document.getElementById('cabinClass').textContent = (selectedFlight.cabin || 'economy').charAt(0).toUpperCase() + (selectedFlight.cabin || 'economy').slice(1);
+            document.getElementById('totalPaid').textContent = '$' + (selectedFlight.price || 495);
+            document.getElementById('paymentBase').textContent = '$' + (selectedFlight.price || 450);
+
+            // Passengers
+            const passengersList = document.getElementById('passengersList');
+            if (bookingData.passengers && bookingData.passengers.length > 0) {
+                bookingData.passengers.forEach((passenger, index) => {
+                    const passengerDiv = document.createElement('div');
+                    passengerDiv.className = 'confirmation-row';
+                    passengerDiv.innerHTML = `
+                        <span class="confirmation-label">Passenger ${index + 1}:</span>
+                        <span class="confirmation-value">${passenger.first_name} ${passenger.last_name}</span>
+                    `;
+                    passengersList.appendChild(passengerDiv);
+                });
+            }
+        }
+
+        function viewBooking() {
+            window.location.href = 'my-bookings.html';
+        }
+
+        function downloadReceipt() {
+            showAlert('Receipt will be emailed to you shortly', 'info');
+        }
+
+        document.addEventListener('DOMContentLoaded', initConfirmation);
+    </script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Test - SKYJET</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #0066cc; margin-bottom: 20px; }
+        .test-section { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .test-button { background: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .test-button:hover { background: #0052a3; }
+        .test-result { margin-top: 15px; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 12px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .loading { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .endpoint-list { list-style: none; }
+        .endpoint-list li { padding: 8px; background: #f9f9f9; margin: 5px 0; border-left: 4px solid #0066cc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 SKYJET - API Integration Test</h1>
+
+        <!-- API Config -->
+        <div class="test-section">
+            <h2>API Configuration</h2>
+            <p><strong>Base URL:</strong> <span id="apiUrl">http://localhost/flight-booking-app/api</span></p>
+            <button class="test-button" onclick="setCustomApiUrl()">Set Custom API URL</button>
+            <div id="configResult"></div>
+        </div>
+
+        <!-- Authentication Tests -->
+        <div class="test-section">
+            <h2>🔐 Authentication Tests</h2>
+            <button class="test-button" onclick="testRegister()">Test Register</button>
+            <button class="test-button" onclick="testLogin()">Test Login</button>
+            <button class="test-button" onclick="testGetProfile()">Test Get Profile</button>
+            <button class="test-button" onclick="testLogout()">Test Logout</button>
+            <div id="authResult" class="test-result"></div>
+        </div>
+
+        <!-- Flight APIs -->
+        <div class="test-section">
+            <h2>✈️ Flight APIs</h2>
+            <button class="test-button" onclick="testSearchFlights()">Search Flights</button>
+            <button class="test-button" onclick="testGetFlights()">Get All Flights</button>
+            <button class="test-button" onclick="testGetFlightDetails()">Get Flight Details</button>
+            <div id="flightResult" class="test-result"></div>
+        </div>
+
+        <!-- Hotel APIs -->
+        <div class="test-section">
+            <h2>🏨 Hotel APIs</h2>
+            <button class="test-button" onclick="testSearchHotels()">Search Hotels</button>
+            <button class="test-button" onclick="testGetHotels()">Get All Hotels</button>
+            <div id="hotelResult" class="test-result"></div>
+        </div>
+
+        <!-- Car APIs -->
+        <div class="test-section">
+            <h2>🚗 Car APIs</h2>
+            <button class="test-button" onclick="testSearchCars()">Search Cars</button>
+            <button class="test-button" onclick="testGetCars()">Get All Cars</button>
+            <div id="carResult" class="test-result"></div>
+        </div>
+
+        <!-- Booking APIs -->
+        <div class="test-section">
+            <h2>🎫 Booking APIs</h2>
+            <button class="test-button" onclick="testCreateBooking()">Create Booking</button>
+            <button class="test-button" onclick="testGetBookings()">Get Bookings</button>
+            <button class="test-button" onclick="testCancelBooking()">Cancel Booking</button>
+            <div id="bookingResult" class="test-result"></div>
+        </div>
+
+        <!-- Payment APIs -->
+        <div class="test-section">
+            <h2>💳 Payment APIs</h2>
+            <button class="test-button" onclick="testProcessPayment()">Process Payment</button>
+            <button class="test-button" onclick="testGetPayments()">Get Payments</button>
+            <div id="paymentResult" class="test-result"></div>
+        </div>
+
+        <!-- Admin APIs -->
+        <div class="test-section">
+            <h2>📊 Admin APIs</h2>
+            <button class="test-button" onclick="testGetDashboardStats()">Get Dashboard Stats</button>
+            <button class="test-button" onclick="testGetAllBookings()">Get All Bookings</button>
+            <button class="test-button" onclick="testGetAllUsers()">Get All Users</button>
+            <button class="test-button" onclick="testGetRevenueReport()">Get Revenue Report</button>
+            <div id="adminResult" class="test-result"></div>
+        </div>
+
+        <!-- Overall Status -->
+        <div class="test-section">
+            <h2>📋 Test Summary</h2>
+            <div id="summary" class="test-result info">
+                <p>Run tests to see results...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/flight-booking-app/api';
+        let token = localStorage.getItem('token');
+        let testResults = {};
+
+        function setCustomApiUrl() {
+            const url = prompt('Enter API Base URL:', API_BASE_URL);
+            if (url) {
+                document.getElementById('apiUrl').textContent = url;
+            }
+        }
+
+        function getApiUrl() {
+            return document.getElementById('apiUrl').textContent;
+        }
+
+        async function makeRequest(endpoint, method = 'GET', data = null) {
+            try {
+                const url = `${getApiUrl()}${endpoint}`;
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (token) {
+                    options.headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+
+                const response = await fetch(url, options);
+                const result = await response.json();
+
+                return {
+                    status: response.status,
+                    ok: response.ok,
+                    data: result
+                };
+            } catch (error) {
+                return {
+                    status: 0,
+                    ok: false,
+                    error: error.message
+                };
+            }
+        }
+
+        function displayResult(elementId, title, result, testName) {
+            const element = document.getElementById(elementId);
+            const statusClass = result.ok ? 'success' : 'error';
+            const statusText = result.ok ? '✅ SUCCESS' : '❌ FAILED';
+
+            let html = `<h3>${statusText} - ${title}</h3>`;
+            html += `<p><strong>Status:</strong> ${result.status}</p>`;
+            html += `<pre>${JSON.stringify(result.data || result.error, null, 2)}</pre>`;
+
+            element.innerHTML = html;
+            element.className = `test-result ${statusClass}`;
+
+            testResults[testName] = result.ok;
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const total = Object.keys(testResults).length;
+            const passed = Object.values(testResults).filter(v => v).length;
+            const failed = total - passed;
+
+            const summary = document.getElementById('summary');
+            summary.innerHTML = `
+                <h3>Test Results Summary</h3>
+                <p><strong>Total Tests:</strong> ${total}</p>
+                <p><strong>Passed:</strong> <span style="color: green;">${passed}</span></p>
+                <p><strong>Failed:</strong> <span style="color: red;">${failed}</span></p>
+                <p><strong>Success Rate:</strong> ${total > 0 ? Math.round((passed/total)*100) : 0}%</p>
+            `;
+        }
+
+        // Authentication Tests
+        async function testRegister() {
+            const result = await makeRequest('/users.php?action=register', 'POST', {
+                first_name: 'Test',
+                last_name: 'User',
+                email: `test${Date.now()}@example.com`,
+                password: 'test123456',
+                phone: '+1234567890'
+            });
+
+            if (result.ok && result.data.token) {
+                token = result.data.token;
+                localStorage.setItem('token', token);
+            }
+
+            displayResult('authResult', 'User Registration', result, 'register');
+        }
+
+        async function testLogin() {
+            const result = await makeRequest('/users.php?action=login', 'POST', {
+                email: 'john@example.com',
+                password: 'password'
+            });
+
+            if (result.ok && result.data.token) {
+                token = result.data.token;
+                localStorage.setItem('token', token);
+            }
+
+            displayResult('authResult', 'User Login', result, 'login');
+        }
+
+        async function testGetProfile() {
+            const result = await makeRequest('/users.php?action=profile');
+            displayResult('authResult', 'Get User Profile', result, 'profile');
+        }
+
+        async function testLogout() {
+            token = null;
+            localStorage.removeItem('token');
+            displayResult('authResult', 'User Logout', { ok: true, status: 200, data: { message: 'Logged out' } }, 'logout');
+        }
+
+        // Flight Tests
+        async function testSearchFlights() {
+            const result = await makeRequest('/flights.php?action=search&from=LHR&to=JFK&date=2025-10-25');
+            displayResult('flightResult', 'Search Flights', result, 'searchFlights');
+        }
+
+        async function testGetFlights() {
+            const result = await makeRequest('/flights.php?action=list');
+            displayResult('flightResult', 'Get All Flights', result, 'getFlights');
+        }
+
+        async function testGetFlightDetails() {
+            const result = await makeRequest('/flights.php?action=details&id=1');
+            displayResult('flightResult', 'Get Flight Details', result, 'flightDetails');
+        }
+
+        // Hotel Tests
+        async function testSearchHotels() {
+            const result = await makeRequest('/hotels.php?action=search&city=London&check_in=2025-10-25&check_out=2025-10-28');
+            displayResult('hotelResult', 'Search Hotels', result, 'searchHotels');
+        }
+
+        async function testGetHotels() {
+            const result = await makeRequest('/hotels.php?action=list');
+            displayResult('hotelResult', 'Get All Hotels', result, 'getHotels');
+        }
+
+        // Car Tests
+        async function testSearchCars() {
+            const result = await makeRequest('/cars.php?action=search&location=London&pickup_date=2025-10-25&dropoff_date=2025-10-28');
+            displayResult('carResult', 'Search Cars', result, 'searchCars');
+        }
+
+        async function testGetCars() {
+            const result = await makeRequest('/cars.php?action=list');
+            displayResult('carResult', 'Get All Cars', result, 'getCars');
+        }
+
+        // Booking Tests
+        async function testCreateBooking() {
+            const result = await makeRequest('/bookings.php?action=create', 'POST', {
+                user_id: 1,
+                flight_id: 1,
+                cabin_class: 'economy',
+                number_of_passengers: 1
+            });
+            displayResult('bookingResult', 'Create Booking', result, 'createBooking');
+        }
+
+        async function testGetBookings() {
+            const result = await makeRequest('/bookings.php?action=list&user_id=1');
+            displayResult('bookingResult', 'Get Bookings', result, 'getBookings');
+        }
+
+        async function testCancelBooking() {
+            const result = await makeRequest('/bookings.php?action=cancel&booking_id=1', 'DELETE');
+            displayResult('bookingResult', 'Cancel Booking', result, 'cancelBooking');
+        }
+
+        // Payment Tests
+        async function testProcessPayment() {
+            const result = await makeRequest('/payments.php?action=process', 'POST', {
+                booking_id: 1,
+                amount: 1030,
+                payment_method: 'credit_card',
+                transaction_id: `TXN${Date.now()}`
+            });
+            displayResult('paymentResult', 'Process Payment', result, 'processPayment');
+        }
+
+        async function testGetPayments() {
+            const result = await makeRequest('/payments.php?action=list');
+            displayResult('paymentResult', 'Get Payments', result, 'getPayments');
+        }
+
+        // Admin Tests
+        async function testGetDashboardStats() {
+            const result = await makeRequest('/admin/dashboard.php?action=stats');
+            displayResult('adminResult', 'Get Dashboard Stats', result, 'dashboardStats');
+        }
+
+        async function testGetAllBookings() {
+            const result = await makeRequest('/admin/dashboard.php?action=bookings');
+            displayResult('adminResult', 'Get All Bookings (Admin)', result, 'adminBookings');
+        }
+
+        async function testGetAllUsers() {
+            const result = await makeRequest('/admin/dashboard.php?action=users');
+            displayResult('adminResult', 'Get All Users (Admin)', result, 'adminUsers');
+        }
+
+        async function testGetRevenueReport() {
+            const result = await makeRequest('/admin/dashboard.php?action=revenue&month=10&year=2025');
+            displayResult('adminResult', 'Get Revenue Report', result, 'revenueReport');
+        }
+    </script>
+</body>
+</html>
